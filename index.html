@@ -2,144 +2,486 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CarePass – Your Key to Secure Health Data</title>
   <meta name="description" content="Secure digital health records with NFC technology for patients and healthcare providers. HIPAA compliant medical data management." />
+  <meta name="author" content="CarePass Medical" />
+  <meta name="keywords" content="digital health, medical records, NFC, healthcare, patient data, secure health, HIPAA compliant" />
+  
+  <meta property="og:title" content="CarePass – Your Key to Secure Health Data" />
+  <meta property="og:description" content="Secure digital health records with NFC technology for patients and healthcare providers" />
+  <meta property="og:type" content="website" />
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            'medical-blue': { DEFAULT: '#3b82f6', light: '#dbeafe', dark: '#1d4ed8' },
-            'health-green': { DEFAULT: '#059669', light: '#dcfce7', dark: '#047857' },
-            'doctor-purple': { DEFAULT: '#7c3aed', light: '#ede9fe', dark: '#5b21b6' },
-            'emergency-red': { DEFAULT: '#dc2626', light: '#fef2f2', dark: '#991b1b' }
+            'medical-blue': {
+              DEFAULT: '#3b82f6',
+              'light': '#dbeafe',
+              'dark': '#1d4ed8'
+            },
+            'health-green': {
+              DEFAULT: '#059669',
+              'light': '#dcfce7',
+              'dark': '#047857'
+            },
+            'doctor-purple': {
+              DEFAULT: '#7c3aed',
+              'light': '#ede9fe',
+              'dark': '#5b21b6'
+            },
+            'emergency-red': {
+              DEFAULT: '#dc2626',
+              'light': '#fef2f2',
+              'dark': '#991b1b'
+            }
+          },
+          backgroundImage: {
+            'gradient-medical': 'linear-gradient(135deg, #3b82f6, #60a5fa)',
+            'gradient-health': 'linear-gradient(135deg, #059669, #34d399)',
+            'gradient-care': 'linear-gradient(135deg, #7c3aed, #a78bfa)',
+            'gradient-hero': 'linear-gradient(135deg, #3b82f6, #7c3aed)',
+            'gradient-bg': 'linear-gradient(180deg, #ffffff, #f8fafc)'
+          },
+          boxShadow: {
+            'medical': '0 10px 25px -5px rgba(59, 130, 246, 0.15)',
+            'glow': '0 0 20px rgba(96, 165, 250, 0.3)',
+            'care': '0 10px 25px -5px rgba(124, 58, 237, 0.15)',
+            'card': '0 4px 12px -2px rgba(15, 23, 42, 0.08)',
+            'emergency': '0 0 20px rgba(220, 38, 38, 0.2)'
+          },
+          keyframes: {
+            'fade-in': {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            },
+            'scale-in': {
+              '0%': { transform: 'scale(0.95)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' }
+            },
+            'spin': {
+              '0%': { transform: 'rotate(0deg)' },
+              '100%': { transform: 'rotate(360deg)' }
+            }
+          },
+          animation: {
+            'fade-in': 'fade-in 0.3s ease-out',
+            'scale-in': 'scale-in 0.2s ease-out',
+            'spin': 'spin 1s linear infinite'
           }
         }
       }
     }
   </script>
   <style>
-    body { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:white; min-height:100vh }
-    .fade-section { opacity:0; transform:scale(.98); transition:all .4s cubic-bezier(.4,0,.2,1) }
-    .fade-section.active { opacity:1; transform:scale(1) }
-    .btn-medical { background:linear-gradient(135deg,#3b82f6,#60a5fa); transition:.3s; border-radius:.75rem; color:#fff; font-weight:600; box-shadow:0 10px 25px -5px rgba(59,130,246,.15) }
-    .btn-medical:hover { box-shadow:0 0 20px rgba(96,165,250,.3); transform:translateY(-2px) }
-    .btn-health { background:linear-gradient(135deg,#059669,#34d399); transition:.3s; border-radius:.75rem; color:#fff; font-weight:600; box-shadow:0 10px 25px -5px rgba(5,150,105,.15) }
-    .btn-health:hover { box-shadow:0 0 20px rgba(52,211,153,.3); transform:translateY(-2px) }
-    .btn-care { background:linear-gradient(135deg,#7c3aed,#a78bfa); transition:.3s; border-radius:.75rem; color:#fff; font-weight:600; box-shadow:0 10px 25px -5px rgba(124,58,237,.15) }
-    .btn-care:hover { box-shadow:0 0 20px rgba(167,139,250,.3); transform:translateY(-2px) }
-    .btn-nfc { background:linear-gradient(135deg,#7c3aed,#a78bfa); transition:.3s; color:#fff; border-radius:.75rem; min-width:4rem; font-size:.875rem; font-weight:600 }
-    .btn-nfc:hover { box-shadow:0 0 20px rgba(167,139,250,.3); transform:translateY(-1px) }
-    .medical-card { background:#fff; border-radius:.75rem; box-shadow:0 4px 12px -2px rgba(15,23,42,.08); border:1px solid rgba(226,232,240,.8) }
-    .emergency-section { background:linear-gradient(135deg,#fef2f2,#fce7e7); border:2px solid rgba(220,38,38,.2); border-radius:.75rem }
-    .input-field,.select-field { width:100%; border:2px solid #e5e7eb; padding:.75rem; border-radius:.5rem; font-size:1rem; background:#fff; transition:border-color .3s }
-    .input-field:focus,.select-field:focus { outline:0; border-color:#3b82f6 }
-    .textarea-field { width:100%; border:2px solid #e5e7eb; padding:.75rem; border-radius:.5rem; font-size:1rem; resize:vertical; background:#fff; min-height:100px; transition:border-color .3s }
-    .textarea-field:focus { outline:0; border-color:#3b82f6 }
-    .emergency-input { border-color:#dc2626 !important }
-    .emergency-input:focus { border-color:#dc2626 !important }
-    .nfc-input-group { display:flex; gap:.5rem; align-items:stretch }
-    .nfc-input-group input { flex:1; min-width:0 }
-    .spinner { border:4px solid #f3f4f6; border-top:4px solid #3b82f6; border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite }
-    @keyframes spin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
-    .toast { position:fixed; top:1.5rem; right:1.5rem; padding:1rem 1.5rem; border-radius:.5rem; box-shadow:0 10px 15px -3px rgba(0,0,0,.1); color:#fff; max-width:20rem; z-index:50; transform:translateX(100%); transition:transform .3s }
-    .toast.show { transform:translateX(0) } .toast.success{background:#059669}.toast.error{background:#dc2626}.toast.warning{background:#d97706}.toast.info{background:#3b82f6}
-    .hidden{display:none!important}
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: white;
+      min-height: 100vh;
+    }
+    
+    .fade-section {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .fade-section.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    .btn-medical {
+      background: linear-gradient(135deg, #3b82f6, #60a5fa);
+      transition: all 0.3s ease;
+      border-radius: 0.75rem;
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15);
+    }
+    .btn-medical:hover {
+      box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .btn-health {
+      background: linear-gradient(135deg, #059669, #34d399);
+      transition: all 0.3s ease;
+      border-radius: 0.75rem;
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.15);
+    }
+    .btn-health:hover {
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .btn-care {
+      background: linear-gradient(135deg, #7c3aed, #a78bfa);
+      transition: all 0.3s ease;
+      border-radius: 0.75rem;
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.15);
+    }
+    .btn-care:hover {
+      box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .btn-nfc {
+      background: linear-gradient(135deg, #7c3aed, #a78bfa);
+      transition: all 0.3s ease;
+      color: white;
+      border-radius: 0.75rem;
+      min-width: 4rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    .btn-nfc:hover {
+      box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+      transform: translateY(-1px);
+    }
+    
+    .medical-card {
+      background: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+    
+    .emergency-section {
+      background: linear-gradient(135deg, #fef2f2, #fce7e7);
+      border: 2px solid rgba(220, 38, 38, 0.2);
+      border-radius: 0.75rem;
+    }
+    
+    .input-field {
+      width: 100%;
+      border: 2px solid #e5e7eb;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      background: white;
+    }
+    .input-field:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+    
+    .select-field {
+      width: 100%;
+      border: 2px solid #e5e7eb;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      background: white;
+      transition: border-color 0.3s ease;
+    }
+    .select-field:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+    
+    .textarea-field {
+      width: 100%;
+      border: 2px solid #e5e7eb;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      resize: vertical;
+      transition: border-color 0.3s ease;
+      background: white;
+      min-height: 100px;
+    }
+    .textarea-field:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+    
+    .emergency-input {
+      border-color: #dc2626 !important;
+    }
+    .emergency-input:focus {
+      border-color: #dc2626 !important;
+    }
+    
+    .nfc-input-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: stretch;
+    }
+    .nfc-input-group input {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .spinner {
+      border: 4px solid #f3f4f6;
+      border-top: 4px solid #3b82f6;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .toast {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      color: white;
+      max-width: 20rem;
+      z-index: 50;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+    .toast.show {
+      transform: translateX(0);
+    }
+    .toast.success { background: #059669; }
+    .toast.error { background: #dc2626; }
+    .toast.warning { background: #d97706; }
+    .toast.info { background: #3b82f6; }
+    
+    .hidden { display: none !important; }
+    
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .5; }
+    }
   </style>
 </head>
 <body class="bg-white min-h-screen">
-  <div id="loadingOverlay" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white p-8 rounded-2xl shadow-lg flex flex-col items-center space-y-4">
-      <div class="spinner"></div><p class="text-gray-700 font-medium text-lg">Processing your request...</p>
+      <div class="spinner"></div>
+      <p class="text-gray-700 font-medium text-lg">Processing your request...</p>
     </div>
   </div>
-  <div id="toast" class="toast"><div class="flex items-center space-x-3"><div id="toast-icon" class="text-xl"></div><div><div id="toast-title" class="font-semibold"></div><div id="toast-message" class="text-sm opacity-90"></div></div></div></div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <div class="flex items-center space-x-3">
+      <div id="toast-icon" class="text-xl"></div>
+      <div>
+        <div id="toast-title" class="font-semibold"></div>
+        <div id="toast-message" class="text-sm opacity-90"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- Access Portal -->
   <div id="access-portal" class="min-h-screen bg-gradient-to-br from-white to-slate-50 flex items-center justify-center p-4 fade-section active">
     <div class="w-full max-w-4xl">
-      <div class="text-center mb-12">
-        <div class="mb-6"><div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-6"><span class="text-4xl text-white">🏥</span></div></div>
-        <h1 class="text-5xl font-bold text-gray-800 mb-4">CarePass Portal</h1>
-        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Your secure gateway to digital health records with NFC technology</p>
-        <div class="flex items-center justify-center space-x-2 text-sm text-gray-500 mt-6"><span>🔒</span><span>End-to-End Encrypted</span><span>•</span><span>HIPAA Compliant</span></div>
+      <div class="text-center mb-12 animate-fade-in">
+        <div class="mb-6">
+          <div class="w-24 h-24 bg-gradient-hero rounded-2xl mx-auto flex items-center justify-center shadow-glow mb-6">
+            <span class="text-4xl text-white">🏥</span>
+          </div>
+        </div>
+        <h1 class="text-5xl font-bold text-gray-800 mb-4">
+          CarePass Portal
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Your secure gateway to digital health records with NFC technology
+        </p>
+        <div class="flex items-center justify-center space-x-2 text-sm text-gray-500 mt-6">
+          <span>🔒</span>
+          <span>End-to-End Encrypted</span>
+          <span>•</span>
+          <span>HIPAA Compliant</span>
+        </div>
       </div>
+
       <div class="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-        <div class="medical-card hover:shadow-xl transition-all duration-300 cursor-pointer group" onclick="showPatientAccess()">
+        <div class="medical-card hover:shadow-glow transition-all duration-300 cursor-pointer group" 
+             onclick="showPatientAccess()">
           <div class="text-center pb-4 p-6">
-            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-400 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-2xl text-white">👤</span></div>
-            <h2 class="text-2xl text-gray-800 font-bold">Patient Access</h2><p class="text-gray-600 mt-2">Manage your personal health records</p>
+            <div class="w-16 h-16 bg-gradient-medical rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="text-2xl text-white">👤</span>
+            </div>
+            <h2 class="text-2xl text-gray-800 font-bold">Patient Access</h2>
+            <p class="text-gray-600 mt-2">
+              Manage your personal health records
+            </p>
           </div>
           <div class="px-6 pb-6 space-y-3">
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">📝</span><span>Create CarePass</span></div>
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">🔄</span><span>Update Medical Records</span></div>
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">📋</span><span>Access Patient Records</span></div>
-            <button class="btn-medical w-full text-white px-6 py-4 rounded-xl transition-all mt-6">Enter Patient Portal</button>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">📝</span>
+              <span>Create CarePass</span>
+            </div>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">🔄</span>
+              <span>Update Medical Records</span>
+            </div>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">📋</span>
+              <span>Access Patient Records</span>
+            </div>
+            <button class="btn-medical w-full text-white px-6 py-4 rounded-xl transition-all mt-6">
+              Enter Patient Portal
+            </button>
           </div>
         </div>
-        <div class="medical-card hover:shadow-xl transition-all duration-300 cursor-pointer group" onclick="showDoctorAccess()">
+
+        <div class="medical-card hover:shadow-glow transition-all duration-300 cursor-pointer group"
+             onclick="showDoctorAccess()">
           <div class="text-center pb-4 p-6">
-            <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-500 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-2xl text-white">🧑‍⚕️</span></div>
-            <h2 class="text-2xl text-gray-800 font-bold">Doctor Access</h2><p class="text-gray-600 mt-2">Healthcare provider portal</p>
+            <div class="w-16 h-16 bg-gradient-care rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="text-2xl text-white">🧑‍⚕️</span>
+            </div>
+            <h2 class="text-2xl text-gray-800 font-bold">Doctor Access</h2>
+            <p class="text-gray-600 mt-2">
+              Healthcare provider portal
+            </p>
           </div>
           <div class="px-6 pb-6 space-y-3">
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">🔍</span><span>Access Patient Records</span></div>
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">✏️</span><span>Update Patient Records</span></div>
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">🩺</span><span>Medical Consultation</span></div>
-            <button class="btn-care w-full text-white px-6 py-4 rounded-xl mt-6">Enter Doctor Portal</button>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">🔍</span>
+              <span>Access Patient Records</span>
+            </div>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">✏️</span>
+              <span>Update Patient Records</span>
+            </div>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">🩺</span>
+              <span>Medical Consultation</span>
+            </div>
+            <button class="btn-care w-full text-white px-6 py-4 rounded-xl transition-all mt-6">
+              Enter Doctor Portal
+            </button>
           </div>
         </div>
       </div>
-      <div class="text-center mt-16 text-gray-500"><p class="text-sm">Protected by advanced encryption and HIPAA compliance standards</p></div>
+
+      <div class="text-center mt-16 text-gray-500">
+        <p class="text-sm">
+          Protected by advanced encryption and HIPAA compliance standards
+        </p>
+      </div>
     </div>
   </div>
 
   <!-- Patient Access -->
   <div id="patient-access" class="hidden min-h-screen bg-gradient-to-br from-white to-blue-50 flex items-center justify-center p-4 fade-section">
     <div class="w-full max-w-4xl">
-      <div class="text-center mb-12">
-        <button onclick="showAccessPortal()" class="mb-8 text-blue-600 hover:text-blue-700 transition-colors">← Back to Portal</button>
-        <div class="mb-6"><div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-400 rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-6"><span class="text-3xl text-white">👤</span></div></div>
-        <h1 class="text-4xl font-bold text-gray-800 mb-4">Patient Portal</h1>
-        <p class="text-lg text-gray-600">Manage your personal health information securely</p>
+      <div class="text-center mb-12 animate-fade-in">
+        <button onclick="showAccessPortal()" 
+                class="mb-8 text-medical-blue hover:text-medical-blue-dark transition-colors">
+          ← Back to Portal
+        </button>
+        
+        <div class="mb-6">
+          <div class="w-20 h-20 bg-gradient-medical rounded-2xl mx-auto flex items-center justify-center shadow-medical mb-6">
+            <span class="text-3xl text-white">👤</span>
+          </div>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">
+          Patient Portal
+        </h1>
+        <p class="text-lg text-gray-600">
+          Manage your personal health information securely
+        </p>
       </div>
+
       <div class="grid md:grid-cols-3 gap-6">
-        <div class="medical-card hover:shadow-lg transition-all duration-300 cursor-pointer group" onclick="showCreateCarePass()">
+        <div class="medical-card hover:shadow-medical transition-all duration-300 cursor-pointer group"
+             onclick="showCreateCarePass()">
           <div class="text-center p-6">
-            <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-400 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-xl text-white">📝</span></div>
-            <h3 class="text-lg text-gray-800 font-bold">Create CarePass</h3><p class="text-sm text-gray-600 mt-2">Join the secure healthcare network</p>
+            <div class="w-14 h-14 bg-gradient-health rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="text-xl text-white">📝</span>
+            </div>
+            <h3 class="text-lg text-gray-800 font-bold">Create CarePass</h3>
+            <p class="text-sm text-gray-600 mt-2">
+              Join the secure healthcare network
+            </p>
           </div>
           <div class="px-6 pb-6">
-            <ul class="space-y-2 text-sm text-gray-600 mb-4"><li>• Secure digital identity</li><li>• NFC-enabled access</li><li>• HIPAA compliant</li></ul>
-            <button class="btn-health w-full text-white px-6 py-3 rounded-xl text-sm">Get Started</button>
+            <ul class="space-y-2 text-sm text-gray-600 mb-4">
+              <li>• Secure digital identity</li>
+              <li>• NFC-enabled access</li>
+              <li>• HIPAA compliant</li>
+            </ul>
+            <button class="btn-health w-full text-white px-6 py-3 rounded-xl text-sm">
+              Get Started
+            </button>
           </div>
         </div>
-        <div class="medical-card hover:shadow-lg transition-all duration-300 cursor-pointer group" onclick="showUpdateRecords(false)">
+
+        <div class="medical-card hover:shadow-medical transition-all duration-300 cursor-pointer group"
+             onclick="showUpdateRecords(false)">
           <div class="text-center p-6">
-            <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-400 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-xl text-white">🔄</span></div>
-            <h3 class="text-lg text-gray-800 font-bold">Update Records</h3><p class="text-sm text-gray-600 mt-2">Comprehensive health information management</p>
+            <div class="w-14 h-14 bg-gradient-medical rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="text-xl text-white">🔄</span>
+            </div>
+            <h3 class="text-lg text-gray-800 font-bold">Update Records</h3>
+            <p class="text-sm text-gray-600 mt-2">
+              Comprehensive health information management
+            </p>
           </div>
           <div class="px-6 pb-6">
-            <ul class="space-y-2 text-sm text-gray-600 mb-4"><li>• Personal information</li><li>• Medical history</li><li>• Emergency contacts</li></ul>
-            <button class="btn-medical w-full text-white px-6 py-3 rounded-xl text-sm">Update Now</button>
+            <ul class="space-y-2 text-sm text-gray-600 mb-4">
+              <li>• Personal information</li>
+              <li>• Medical history</li>
+              <li>• Emergency contacts</li>
+            </ul>
+            <button class="btn-medical w-full text-white px-6 py-3 rounded-xl text-sm">
+              Update Now
+            </button>
           </div>
         </div>
-        <div class="medical-card hover:shadow-lg transition-all duration-300 cursor-pointer group" onclick="showAccessRecords(false)">
+
+        <div class="medical-card hover:shadow-medical transition-all duration-300 cursor-pointer group"
+             onclick="showAccessRecords(false)">
           <div class="text-center p-6">
-            <div class="w-14 h-14 bg-gradient-to-br from-purple-600 to-purple-500 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-xl text-white">📋</span></div>
-            <h3 class="text-lg text-gray-800 font-bold">View Records</h3><p class="text-sm text-gray-600 mt-2">Access your personal medical data</p>
+            <div class="w-14 h-14 bg-gradient-care rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="text-xl text-white">📋</span>
+            </div>
+            <h3 class="text-lg text-gray-800 font-bold">View Records</h3>
+            <p class="text-sm text-gray-600 mt-2">
+              Access your personal medical data
+            </p>
           </div>
           <div class="px-6 pb-6">
-            <ul class="space-y-2 text-sm text-gray-600 mb-4"><li>• Complete medical history</li><li>• Vital signs tracking</li><li>• Secure access</li></ul>
-            <button class="btn-care w-full text-white px-6 py-3 rounded-xl text-sm">View Records</button>
+            <ul class="space-y-2 text-sm text-gray-600 mb-4">
+              <li>• Complete medical history</li>
+              <li>• Vital signs tracking</li>
+              <li>• Secure access</li>
+            </ul>
+            <button class="btn-care w-full text-white px-6 py-3 rounded-xl text-sm">
+              View Records
+            </button>
           </div>
         </div>
       </div>
+
       <div class="mt-12 text-center">
         <div class="bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl p-6 max-w-2xl mx-auto">
-          <div class="flex items-center justify-center space-x-2 text-gray-600"><span class="text-xl">💡</span><p class="text-sm">All your health information is encrypted and accessible only with your CarePass ID</p></div>
+          <div class="flex items-center justify-center space-x-2 text-gray-600">
+            <span class="text-xl">💡</span>
+            <p class="text-sm">
+              All your health information is encrypted and accessible only with your CarePass ID
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -148,46 +490,105 @@
   <!-- Doctor Access -->
   <div id="doctor-access" class="hidden min-h-screen bg-gradient-to-br from-white to-purple-50 flex items-center justify-center p-4 fade-section">
     <div class="w-full max-w-3xl">
-      <div class="text-center mb-12">
-        <button onclick="showAccessPortal()" class="mb-8 text-purple-600 hover:text-purple-700 transition-colors">← Back to Portal</button>
-        <div class="mb-6"><div class="w-20 h-20 bg-gradient-to-br from-purple-600 to-purple-500 rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-6"><span class="text-3xl text-white">🧑‍⚕️</span></div></div>
-        <h1 class="text-4xl font-bold text-gray-800 mb-4">Healthcare Provider Portal</h1>
-        <p class="text-lg text-gray-600">Secure patient record access and management</p>
+      <div class="text-center mb-12 animate-fade-in">
+        <button onclick="showAccessPortal()" 
+                class="mb-8 text-doctor-purple hover:text-doctor-purple-dark transition-colors">
+          ← Back to Portal
+        </button>
+        
+        <div class="mb-6">
+          <div class="w-20 h-20 bg-gradient-care rounded-2xl mx-auto flex items-center justify-center shadow-care mb-6">
+            <span class="text-3xl text-white">🧑‍⚕️</span>
+          </div>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">
+          Healthcare Provider Portal
+        </h1>
+        <p class="text-lg text-gray-600">
+          Secure patient record access and management
+        </p>
       </div>
+
       <div class="grid md:grid-cols-2 gap-8">
-        <div class="medical-card hover:shadow-lg transition-all duration-300 cursor-pointer group" onclick="showAccessRecords(true)">
+        <div class="medical-card hover:shadow-care transition-all duration-300 cursor-pointer group"
+             onclick="showAccessRecords(true)">
           <div class="text-center p-6">
-            <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-500 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-2xl text-white">🔍</span></div>
-            <h3 class="text-xl text-gray-800 font-bold">Access Patient Records</h3><p class="text-gray-600 mt-2">View comprehensive patient medical information</p>
+            <div class="w-16 h-16 bg-gradient-care rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="text-2xl text-white">🔍</span>
+            </div>
+            <h3 class="text-xl text-gray-800 font-bold">Access Patient Records</h3>
+            <p class="text-gray-600 mt-2">
+              View comprehensive patient medical information
+            </p>
           </div>
           <div class="px-6 pb-6 space-y-3">
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">📋</span><span>Complete medical history</span></div>
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">🩺</span><span>Vital signs and measurements</span></div>
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">🚨</span><span>Critical medical information</span></div>
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">📞</span><span>Contact and insurance details</span></div>
-            <button class="btn-care w-full text-white px-6 py-4 rounded-xl mt-6">Access Records</button>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">📋</span>
+              <span>Complete medical history</span>
+            </div>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">🩺</span>
+              <span>Vital signs and measurements</span>
+            </div>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">🚨</span>
+              <span>Critical medical information</span>
+            </div>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">📞</span>
+              <span>Contact and insurance details</span>
+            </div>
+            <button class="btn-care w-full text-white px-6 py-4 rounded-xl mt-6">
+              Access Records
+            </button>
           </div>
         </div>
-        <div class="medical-card hover:shadow-lg transition-all duration-300 cursor-pointer group" onclick="showUpdateRecords(true)">
+
+        <div class="medical-card hover:shadow-medical transition-all duration-300 cursor-pointer group"
+             onclick="showUpdateRecords(true)">
           <div class="text-center p-6">
-            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-400 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-2xl text-white">✏️</span></div>
-            <h3 class="text-xl text-gray-800 font-bold">Update Patient Records</h3><p class="text-gray-600 mt-2">Modify and update patient medical information</p>
+            <div class="w-16 h-16 bg-gradient-medical rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="text-2xl text-white">✏️</span>
+            </div>
+            <h3 class="text-xl text-gray-800 font-bold">Update Patient Records</h3>
+            <p class="text-gray-600 mt-2">
+              Modify and update patient medical information
+            </p>
           </div>
           <div class="px-6 pb-6 space-y-3">
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">📝</span><span>Update medical history</span></div>
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">💊</span><span>Manage medications</span></div>
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">🔄</span><span>Update vital signs</span></div>
-            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">📊</span><span>Treatment plans</span></div>
-            <button class="btn-medical w-full text-white px-6 py-4 rounded-xl mt-6">Update Records</button>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">📝</span>
+              <span>Update medical history</span>
+            </div>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">💊</span>
+              <span>Manage medications</span>
+            </div>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">🔄</span>
+              <span>Update vital signs</span>
+            </div>
+            <div class="flex items-center space-x-3 text-gray-700">
+              <span class="text-lg">📊</span>
+              <span>Treatment plans</span>
+            </div>
+            <button class="btn-medical w-full text-white px-6 py-4 rounded-xl mt-6">
+              Update Records
+            </button>
           </div>
         </div>
       </div>
+
       <div class="mt-12">
         <div class="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-xl p-6">
           <div class="flex items-center space-x-3 text-purple-800">
             <span class="text-2xl">⚠️</span>
-            <div><h3 class="font-semibold">Healthcare Provider Notice</h3>
-              <p class="text-sm text-purple-700 mt-1">All patient information accessed through this portal is protected under HIPAA regulations. Healthcare provider authentication is required for all actions.</p>
+            <div>
+              <h3 class="font-semibold">Healthcare Provider Notice</h3>
+              <p class="text-sm text-purple-700 mt-1">
+                All patient information accessed through this portal is protected under HIPAA regulations. 
+                Healthcare provider authentication is required for all actions.
+              </p>
             </div>
           </div>
         </div>
@@ -195,130 +596,242 @@
     </div>
   </div>
 
-  <!-- Create CarePass -->
+  <!-- Create CarePass Form -->
   <div id="create-carepass" class="hidden min-h-screen bg-gradient-to-br from-white to-green-50 flex items-center justify-center p-4 fade-section">
     <div class="w-full max-w-md">
       <div class="medical-card">
         <div class="p-6 border-b border-gray-100">
-          <button onclick="showPatientAccess()" class="mb-4 text-green-600 hover:text-green-700 flex items-center space-x-2 transition-colors"><span>←</span><span>Back to Menu</span></button>
+          <button onclick="showPatientAccess()" 
+                  class="mb-4 text-health-green hover:text-health-green-dark flex items-center space-x-2 transition-colors">
+            <span>←</span><span>Back to Menu</span>
+          </button>
           <div class="text-center">
-            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-400 rounded-xl mx-auto flex items-center justify-center mb-4"><span class="text-2xl text-white">📝</span></div>
-            <h2 class="text-2xl font-bold text-gray-800">Create Your CarePass</h2><p class="text-gray-600 mt-2">Join the secure healthcare network</p>
+            <div class="w-16 h-16 bg-gradient-health rounded-xl mx-auto flex items-center justify-center mb-4">
+              <span class="text-2xl text-white">🔐</span>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800">Create Your CarePass</h2>
+            <p class="text-gray-600 mt-2">Join the secure healthcare network</p>
           </div>
         </div>
+        
         <div class="p-6">
           <form id="createForm" class="space-y-6">
-            <div><label class="block font-semibold mb-2 text-gray-700">Role:</label>
+            <div>
+              <label class="block font-semibold mb-2 text-gray-700">Role:</label>
               <select name="role" required class="select-field">
                 <option value="">Select your role</option>
                 <option value="patient">👤 Patient</option>
                 <option value="doctor">🧑‍⚕️ Healthcare Provider</option>
               </select>
             </div>
-            <div><label class="block font-semibold mb-2 text-gray-700">Full Name:</label>
+            
+            <div>
+              <label class="block font-semibold mb-2 text-gray-700">Full Name:</label>
               <input name="name" type="text" required placeholder="Enter your full name" class="input-field" />
             </div>
-            <div><label class="block font-semibold mb-2 text-gray-700">CarePass ID (NFC Security):</label>
+            
+            <div>
+              <label class="block font-semibold mb-2 text-gray-700">CarePass ID (NFC Security):</label>
               <div class="nfc-input-group">
-                <input id="carePassIdInput" name="carePassId" type="password" required placeholder="Tap NFC card or enter secure ID" class="input-field" />
-                <button type="button" onclick="scanNFC('carePassIdInput')" class="btn-nfc text-white px-3 py-2 rounded-xl">📡</button>
+                <input id="carePassIdInput" name="carePassId" type="password" required 
+                       placeholder="Tap NFC card or enter secure ID" class="input-field" />
+                <button type="button" onclick="scanNFC('carePassIdInput')" class="btn-nfc text-white px-3 py-2 rounded-xl transition-all">
+                  📡
+                </button>
               </div>
               <p class="text-sm text-gray-500 mt-2">🔒 Your secure healthcare identifier</p>
             </div>
-            <button type="submit" class="btn-health w-full text-white px-6 py-4 rounded-xl text-lg font-semibold">Create Secure CarePass</button>
+            
+            <button type="submit" class="btn-health w-full text-white px-6 py-4 rounded-xl text-lg font-semibold transition-all">
+              Create Secure CarePass
+            </button>
           </form>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Update Records -->
+  <!-- Update Records Form -->
   <div id="update-records" class="hidden min-h-screen p-4 fade-section bg-white">
     <div class="max-w-4xl mx-auto">
       <div class="medical-card">
         <div class="p-6 border-b border-gray-100">
-          <button id="updateBackBtn" onclick="showPatientAccess()" class="text-blue-600 hover:text-blue-700 flex items-center space-x-2 mb-4 transition-colors"><span>←</span><span>Back to Menu</span></button>
+          <button id="updateBackBtn" onclick="showPatientAccess()" 
+                  class="text-blue-600 hover:text-blue-700 flex items-center space-x-2 mb-4 transition-colors">
+            <span>←</span><span>Back to Menu</span>
+          </button>
           <h2 id="updateTitle" class="text-3xl font-bold text-center text-gray-800">📝 Update Medical Records</h2>
           <p id="updateSubtitle" class="text-center text-gray-600 mt-2">Comprehensive Health Information Management</p>
         </div>
+        
         <div class="p-6">
           <form id="updateForm" class="space-y-8">
             <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
               <label class="block font-semibold mb-3 text-gray-800">🔐 <span id="nfcLabel">CarePass Authentication:</span></label>
               <div class="nfc-input-group">
-                <input id="carePassIdInputUpd" name="carePassId" type="password" required placeholder="Tap NFC card or enter your CarePass ID" class="input-field" />
-                <button type="button" onclick="scanNFC('carePassIdInputUpd')" class="btn-nfc text-white px-3 py-2 rounded-xl">📡</button>
+                <input id="carePassIdInputUpd" name="carePassId" type="password" required 
+                       placeholder="Tap NFC card or enter your CarePass ID" class="input-field" />
+                <button type="button" onclick="scanNFC('carePassIdInputUpd')" class="btn-nfc text-white px-3 py-2 rounded-xl transition-all">
+                  📡
+                </button>
               </div>
             </div>
 
             <div class="space-y-6">
               <h3 class="text-xl font-bold text-gray-800 border-b border-gray-200 pb-2">👤 Personal Information</h3>
-              <div><label class="block font-semibold mb-2 text-gray-700">Full Legal Name:</label><input name="fullName" type="text" placeholder="Full Legal Name" class="input-field" /></div>
+              
+              <div>
+                <label class="block font-semibold mb-2 text-gray-700">Full Legal Name:</label>
+                <input name="fullName" type="text" placeholder="Full Legal Name" class="input-field" />
+              </div>
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label class="block font-semibold mb-2 text-gray-700">Date of Birth:</label><input name="dob" type="date" class="input-field" /></div>
-                <div><label class="block font-semibold mb-2 text-gray-700">Gender:</label>
+                <div>
+                  <label class="block font-semibold mb-2 text-gray-700">Date of Birth:</label>
+                  <input name="dob" type="date" class="input-field" />
+                </div>
+                <div>
+                  <label class="block font-semibold mb-2 text-gray-700">Gender:</label>
                   <select name="gender" class="select-field">
-                    <option value="">Select Gender</option><option value="Male ♂">Male ♂</option><option value="Female ♀">Female ♀</option><option value="Other ⚧">Other ⚧</option>
+                    <option value="">Select Gender</option>
+                    <option value="Male ♂">Male ♂</option>
+                    <option value="Female ♀">Female ♀</option>
+                    <option value="Other ⚧">Other ⚧</option>
                   </select>
                 </div>
               </div>
-              <div><label class="block font-semibold mb-2 text-gray-700">Blood Group:</label>
+
+              <div>
+                <label class="block font-semibold mb-2 text-gray-700">Blood Group:</label>
                 <select name="bloodGroup" class="select-field">
-                  <option value="">Select Blood Group</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option>
+                  <option value="">Select Blood Group</option>
+                  <option value="A+">A+ (A Positive)</option>
+                  <option value="A-">A- (A Negative)</option>
+                  <option value="B+">B+ (B Positive)</option>
+                  <option value="B-">B- (B Negative)</option>
+                  <option value="O+">O+ (O Positive)</option>
+                  <option value="O-">O- (O Negative)</option>
+                  <option value="AB+">AB+ (AB Positive)</option>
+                  <option value="AB-">AB- (AB Negative)</option>
                 </select>
               </div>
             </div>
 
             <div class="space-y-6">
               <h3 class="text-xl font-bold text-gray-800 border-b border-gray-200 pb-2">🩺 Vital Signs & Measurements</h3>
+              
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label class="block font-semibold mb-2 text-gray-700">Height (cm):</label><input id="heightInput" name="height" type="number" placeholder="Height in centimeters" class="input-field" oninput="calculateBMI()" /></div>
-                <div><label class="block font-semibold mb-2 text-gray-700">Weight (kg):</label><input id="weightInput" name="weight" type="number" placeholder="Weight in kilograms" class="input-field" oninput="calculateBMI()" /></div>
+                <div>
+                  <label class="block font-semibold mb-2 text-gray-700">Height (cm):</label>
+                  <input id="heightInput" name="height" type="number" placeholder="Height in centimeters" class="input-field" oninput="calculateBMI()" />
+                </div>
+                <div>
+                  <label class="block font-semibold mb-2 text-gray-700">Weight (kg):</label>
+                  <input id="weightInput" name="weight" type="number" placeholder="Weight in kilograms" class="input-field" oninput="calculateBMI()" />
+                </div>
               </div>
               <div id="bmiResult" class="text-lg font-semibold text-green-600 bg-green-50 p-3 rounded-lg hidden"></div>
+
               <div>
                 <label class="block font-semibold mb-2 text-gray-700">Blood Pressure (e.g., 120/80):</label>
                 <input id="bpInput" name="bp" type="text" placeholder="Systolic/Diastolic (e.g., 120/80)" class="input-field" oninput="checkBloodPressure()" />
-                <div id="bpWarning" class="hidden bg-red-50 border border-red-300 text-red-600 p-3 rounded-lg mt-3"><div class="flex items-center space-x-2"><span class="text-xl">⚠️</span><span class="font-semibold">Abnormal blood pressure detected! Please consult your healthcare provider.</span></div></div>
+                <div id="bpWarning" class="hidden bg-red-50 border border-red-300 text-red-600 p-3 rounded-lg mt-3">
+                  <div class="flex items-center space-x-2">
+                    <span class="text-xl">⚠️</span>
+                    <span class="font-semibold">Abnormal blood pressure detected! Please consult your healthcare provider.</span>
+                  </div>
+                </div>
               </div>
             </div>
 
             <div class="emergency-section p-6">
-              <h3 class="text-xl font-bold text-red-600 mb-4 flex items-center space-x-2"><span>🚨</span><span>Critical Medical Information</span></h3>
+              <h3 class="text-xl font-bold text-red-600 mb-4 flex items-center space-x-2">
+                <span>🚨</span><span>Critical Medical Information</span>
+              </h3>
+              
               <div class="space-y-6">
                 <div>
                   <label class="block font-bold mb-3 text-red-600">Known Allergies:</label>
-                  <div id="allergiesList" class="space-y-3"><input name="allergies[]" type="text" placeholder="e.g., Penicillin, Shellfish, Latex" class="input-field emergency-input" /></div>
-                  <button type="button" onclick="addAllergy()" class="mt-3 text-red-600 hover:text-red-700 font-semibold">+ Add Another Allergy</button>
+                  <div id="allergiesList" class="space-y-3">
+                    <input name="allergies[]" type="text" placeholder="e.g., Penicillin, Shellfish, Latex" 
+                           class="input-field emergency-input" />
+                  </div>
+                  <button type="button" onclick="addAllergy()" class="mt-3 text-red-600 hover:text-red-700 font-semibold transition-colors">
+                    + Add Another Allergy
+                  </button>
                 </div>
+
                 <div>
                   <label class="block font-bold mb-3 text-red-600">Current Medications:</label>
-                  <div id="medicationsList" class="space-y-3"><input name="medications[]" type="text" placeholder="e.g., Metformin 500mg twice daily" class="input-field emergency-input" /></div>
-                  <button type="button" onclick="addMedication()" class="mt-3 text-red-600 hover:text-red-700 font-semibold">+ Add Another Medication</button>
+                  <div id="medicationsList" class="space-y-3">
+                    <input name="medications[]" type="text" placeholder="e.g., Metformin 500mg twice daily" 
+                           class="input-field emergency-input" />
+                  </div>
+                  <button type="button" onclick="addMedication()" class="mt-3 text-red-600 hover:text-red-700 font-semibold transition-colors">
+                    + Add Another Medication
+                  </button>
                 </div>
-                <div><label class="block font-bold mb-2 text-red-600">Emergency Contact:</label><input name="emergencyContact" type="text" placeholder="Name & Phone Number" class="input-field emergency-input" /></div>
+
+                <div>
+                  <label class="block font-bold mb-2 text-red-600">Emergency Contact:</label>
+                  <input name="emergencyContact" type="text" placeholder="Name & Phone Number" 
+                         class="input-field emergency-input" />
+                </div>
               </div>
             </div>
 
             <div class="space-y-6">
               <h3 class="text-xl font-bold text-gray-800 border-b border-gray-200 pb-2">📋 Medical History</h3>
-              <div><label class="block font-semibold mb-2 text-gray-700">Medical History & Chronic Conditions:</label><textarea name="medicalHistory" rows="4" placeholder="List chronic diseases, ongoing conditions, genetic predispositions..." class="textarea-field"></textarea></div>
-              <div><label class="block font-semibold mb-2 text-gray-700">Treatment History:</label><textarea name="treatmentHistory" rows="4" placeholder="Previous treatments, therapies, rehabilitation..." class="textarea-field"></textarea></div>
-              <div><label class="block font-semibold mb-2 text-gray-700">Surgical History:</label><textarea name="surgeryHistory" rows="4" placeholder="Previous surgeries, procedures, implants, dates..." class="textarea-field"></textarea></div>
+              
+              <div>
+                <label class="block font-semibold mb-2 text-gray-700">Medical History & Chronic Conditions:</label>
+                <textarea name="medicalHistory" rows="4" 
+                          placeholder="List chronic diseases, ongoing conditions, genetic predispositions..." 
+                          class="textarea-field"></textarea>
+              </div>
+
+              <div>
+                <label class="block font-semibold mb-2 text-gray-700">Treatment History:</label>
+                <textarea name="treatmentHistory" rows="4" 
+                          placeholder="Previous treatments, therapies, rehabilitation..." 
+                          class="textarea-field"></textarea>
+              </div>
+
+              <div>
+                <label class="block font-semibold mb-2 text-gray-700">Surgical History:</label>
+                <textarea name="surgeryHistory" rows="4" 
+                          placeholder="Previous surgeries, procedures, implants, dates..." 
+                          class="textarea-field"></textarea>
+              </div>
             </div>
 
             <div class="space-y-6">
               <h3 class="text-xl font-bold text-gray-800 border-b border-gray-200 pb-2">📞 Contact & Insurance Information</h3>
-              <div><label class="block font-semibold mb-2 text-gray-700">Insurance Provider:</label><input name="insuranceProvider" type="text" placeholder="Insurance Company Name & Policy Number" class="input-field" /></div>
+              
+              <div>
+                <label class="block font-semibold mb-2 text-gray-700">Insurance Provider:</label>
+                <input name="insuranceProvider" type="text" placeholder="Insurance Company Name & Policy Number" class="input-field" />
+              </div>
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label class="block font-semibold mb-2 text-gray-700">Phone Number:</label><input name="phone" type="tel" placeholder="Primary Phone Number" class="input-field" /></div>
-                <div><label class="block font-semibold mb-2 text-gray-700">Email Address:</label><input name="email" type="email" placeholder="Email Address" class="input-field" /></div>
+                <div>
+                  <label class="block font-semibold mb-2 text-gray-700">Phone Number:</label>
+                  <input name="phone" type="tel" placeholder="Primary Phone Number" class="input-field" />
+                </div>
+                <div>
+                  <label class="block font-semibold mb-2 text-gray-700">Email Address:</label>
+                  <input name="email" type="email" placeholder="Email Address" class="input-field" />
+                </div>
               </div>
             </div>
 
             <div class="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-4 pt-6">
-              <button type="button" onclick="saveDraft()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold">💾 Save Draft Locally</button>
-              <button type="submit" class="flex-1 btn-health text-white px-6 py-3 rounded-xl font-semibold">✅ Update CarePass Record</button>
+              <button type="button" onclick="saveDraft()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold transition-all">
+                💾 Save Draft Locally
+              </button>
+              <button type="submit" class="flex-1 btn-health text-white px-6 py-3 rounded-xl font-semibold transition-all">
+                ✅ Update CarePass Record
+              </button>
             </div>
           </form>
         </div>
@@ -326,93 +839,192 @@
     </div>
   </div>
 
-  <!-- Access Records -->
+  <!-- Access Records View -->
   <div id="access-records" class="hidden min-h-screen bg-gradient-to-br from-white to-purple-50 p-4 fade-section">
     <div class="max-w-6xl mx-auto">
       <div class="medical-card">
         <div class="p-6 border-b border-gray-100">
-          <button id="accessBackBtn" onclick="showPatientAccess()" class="mb-4 text-purple-600 hover:text-purple-700 transition-colors">← Back to Menu</button>
-          <div class="text-center"><h2 id="accessTitle" class="text-3xl text-gray-800 font-bold">Patient Record Access</h2><p id="accessSubtitle" class="text-gray-600 mt-2">View your personal medical information</p></div>
+          <button id="accessBackBtn" onclick="showPatientAccess()" 
+                  class="mb-4 text-doctor-purple hover:text-doctor-purple-dark transition-colors">
+            ← Back to Menu
+          </button>
+          <div class="text-center">
+            <h2 id="accessTitle" class="text-3xl text-gray-800 font-bold">Patient Record Access</h2>
+            <p id="accessSubtitle" class="text-gray-600 mt-2">
+              View your personal medical information
+            </p>
+          </div>
         </div>
+        
         <div class="p-6">
           <div id="accessForm" class="space-y-6 mb-8">
-            <div class="bg-purple-50 p-6 rounded-xl border border-purple-200">
-              <label class="text-gray-800 font-semibold mb-3 block">🔐 <span id="accessNfcLabel">CarePass ID:</span></label>
+            <div class="bg-doctor-purple-light p-6 rounded-xl border border-purple-200">
+              <label class="text-gray-800 font-semibold mb-3 block">
+                🔐 <span id="accessNfcLabel">CarePass ID:</span>
+              </label>
               <div class="nfc-input-group">
-                <input id="carePassIdInputAcc" type="password" required placeholder="Tap NFC card or enter your CarePass ID" class="input-field" />
-                <button type="button" onclick="scanNFC('carePassIdInputAcc')" class="btn-nfc text-white px-3 py-2 rounded-xl">📡</button>
+                <input id="carePassIdInputAcc" type="password" required 
+                       placeholder="Tap NFC card or enter your CarePass ID" class="input-field" />
+                <button type="button" onclick="scanNFC('carePassIdInputAcc')" class="btn-nfc text-white px-3 py-2 rounded-xl transition-all">
+                  📡
+                </button>
               </div>
-              <p id="accessHelp" class="text-sm text-gray-600 mt-2">🔒 Secure access to your medical records</p>
+              <p id="accessHelp" class="text-sm text-gray-600 mt-2">
+                🔒 Secure access to your medical records
+              </p>
             </div>
-            <button onclick="accessPatientRecord()" class="btn-care w-full text-white px-6 py-4 rounded-xl text-lg font-semibold">🔍 Access Patient Record</button>
+            
+            <button onclick="accessPatientRecord()" 
+                    class="btn-care w-full text-white px-6 py-4 rounded-xl text-lg font-semibold transition-all">
+              🔍 Access Patient Record
+            </button>
           </div>
 
           <div id="patientRecord" class="hidden space-y-6">
-            <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 rounded-xl text-center">
-              <h3 class="text-2xl font-bold mb-2">📋 Patient Medical Record</h3><p class="opacity-90">Confidential Healthcare Information</p>
-              <div class="bg-white/20 p-3 rounded-lg mt-4"><p class="text-sm">⚠️ This information is protected under HIPAA regulations</p></div>
+            <div class="bg-gradient-to-r from-medical-blue to-doctor-purple text-white p-6 rounded-xl text-center">
+              <h3 class="text-2xl font-bold mb-2">📋 Patient Medical Record</h3>
+              <p class="opacity-90">Confidential Healthcare Information</p>
+              <div class="bg-white bg-opacity-20 p-3 rounded-lg mt-4">
+                <p class="text-sm">⚠️ This information is protected under HIPAA regulations</p>
+              </div>
             </div>
 
             <div class="medical-card border-l-4 border-blue-500">
               <div class="p-6">
-                <h4 class="text-xl font-bold text-blue-600 mb-4 flex items-center"><span class="text-2xl mr-2">👤</span> Patient Identity</h4>
+                <h4 class="text-xl font-bold text-blue-600 mb-4 flex items-center">
+                  <span class="text-2xl mr-2">👤</span> Patient Identity
+                </h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Full Name</label><p class="text-lg font-medium" id="recordName">-</p></div>
-                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Date of Birth</label><p class="text-lg font-medium" id="recordDob">-</p></div>
-                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Gender</label><p class="text-lg font-medium" id="recordGender">-</p></div>
-                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Blood Group</label><p class="text-lg font-bold text-red-600" id="recordBloodGroup">-</p></div>
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Full Name</label>
+                    <p class="text-lg font-medium" id="recordName">-</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Date of Birth</label>
+                    <p class="text-lg font-medium" id="recordDob">-</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Gender</label>
+                    <p class="text-lg font-medium" id="recordGender">-</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Blood Group</label>
+                    <p class="text-lg font-bold text-red-600" id="recordBloodGroup">-</p>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="emergency-section border-l-4 border-red-500">
               <div class="p-6">
-                <h4 class="text-xl font-bold text-red-600 mb-4 flex items-center"><span class="text-2xl mr-2">🚨</span> Critical Medical Information</h4>
+                <h4 class="text-xl font-bold text-red-600 mb-4 flex items-center">
+                  <span class="text-2xl mr-2">🚨</span> Critical Medical Information
+                </h4>
                 <div class="space-y-4">
-                  <div><label class="block text-sm font-bold text-red-600 mb-2">Known Allergies</label><div class="bg-white border border-red-300 rounded-lg p-4"><p class="font-medium" id="recordAllergies">-</p></div></div>
-                  <div><label class="block text-sm font-bold text-red-600 mb-2">Current Medications</label><div class="bg-white border border-red-300 rounded-lg p-4"><p class="font-medium" id="recordMedications">-</p></div></div>
-                  <div><label class="block text-sm font-bold text-red-600 mb-2">Emergency Contact</label><div class="bg-white border border-red-300 rounded-lg p-4 flex items-center"><span class="text-xl mr-3">📞</span><p class="font-medium" id="recordEmergencyContact">-</p></div></div>
+                  <div>
+                    <label class="block text-sm font-bold text-red-600 mb-2">Known Allergies</label>
+                    <div class="bg-white border border-red-300 rounded-lg p-4">
+                      <p class="font-medium" id="recordAllergies">-</p>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-bold text-red-600 mb-2">Current Medications</label>
+                    <div class="bg-white border border-red-300 rounded-lg p-4">
+                      <p class="font-medium" id="recordMedications">-</p>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-bold text-red-600 mb-2">Emergency Contact</label>
+                    <div class="bg-white border border-red-300 rounded-lg p-4 flex items-center">
+                      <span class="text-xl mr-3">📞</span>
+                      <p class="font-medium" id="recordEmergencyContact">-</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="medical-card border-l-4 border-green-500">
               <div class="p-6">
-                <h4 class="text-xl font-bold text-green-600 mb-4 flex items-center"><span class="text-2xl mr-2">🩺</span> Vital Signs & Measurements</h4>
+                <h4 class="text-xl font-bold text-green-600 mb-4 flex items-center">
+                  <span class="text-2xl mr-2">🩺</span> Vital Signs & Measurements
+                </h4>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  <div class="text-center p-4 bg-green-50 rounded-lg"><label class="text-sm font-semibold text-gray-600 mb-1 block">Height</label><p class="text-2xl font-bold text-green-600" id="recordHeight">-</p></div>
-                  <div class="text-center p-4 bg-green-50 rounded-lg"><label class="text-sm font-semibold text-gray-600 mb-1 block">Weight</label><p class="text-2xl font-bold text-green-600" id="recordWeight">-</p></div>
-                  <div class="text-center p-4 bg-green-50 rounded-lg"><label class="text-sm font-semibold text-gray-600 mb-1 block">BMI</label><p class="text-2xl font-bold text-green-600" id="recordBmi">-</p></div>
-                  <div class="text-center p-4 bg-green-50 rounded-lg"><label class="text-sm font-semibold text-gray-600 mb-1 block">Blood Pressure</label><p class="text-2xl font-bold text-green-600" id="recordBp">-</p></div>
+                  <div class="text-center p-4 bg-green-50 rounded-lg">
+                    <label class="text-sm font-semibold text-gray-600 mb-1 block">Height</label>
+                    <p class="text-2xl font-bold text-green-600" id="recordHeight">-</p>
+                  </div>
+                  <div class="text-center p-4 bg-green-50 rounded-lg">
+                    <label class="text-sm font-semibold text-gray-600 mb-1 block">Weight</label>
+                    <p class="text-2xl font-bold text-green-600" id="recordWeight">-</p>
+                  </div>
+                  <div class="text-center p-4 bg-green-50 rounded-lg">
+                    <label class="text-sm font-semibold text-gray-600 mb-1 block">BMI</label>
+                    <p class="text-2xl font-bold text-green-600" id="recordBmi">-</p>
+                  </div>
+                  <div class="text-center p-4 bg-green-50 rounded-lg">
+                    <label class="text-sm font-semibold text-gray-600 mb-1 block">Blood Pressure</label>
+                    <p class="text-2xl font-bold text-green-600" id="recordBp">-</p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="medical-card border-l-4 border-indigo-500">
+            <div class="medical-card border-l-4 border-purple-500">
               <div class="p-6">
-                <h4 class="text-xl font-bold text-indigo-600 mb-4 flex items-center"><span class="text-2xl mr-2">🗂️</span> Medical & Treatment History</h4>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Medical History</label><p class="text-sm md:text-base font-medium" id="recordMedicalHistory">-</p></div>
-                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Treatment History</label><p class="text-sm md:text-base font-medium" id="recordTreatmentHistory">-</p></div>
-                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Surgical History</label><p class="text-sm md:text-base font-medium" id="recordSurgeryHistory">-</p></div>
+                <h4 class="text-xl font-bold text-purple-600 mb-4 flex items-center">
+                  <span class="text-2xl mr-2">📋</span> Medical History
+                </h4>
+                <div class="space-y-6">
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-2">Medical History</label>
+                    <div class="bg-gray-50 border rounded-lg p-4">
+                      <p class="text-gray-800" id="recordMedicalHistory">-</p>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-2">Treatment History</label>
+                    <div class="bg-gray-50 border rounded-lg p-4">
+                      <p class="text-gray-800" id="recordTreatmentHistory">-</p>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-2">Surgical History</label>
+                    <div class="bg-gray-50 border rounded-lg p-4">
+                      <p class="text-gray-800" id="recordSurgeryHistory">-</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="medical-card">
               <div class="p-6">
-                <h4 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><span class="text-2xl mr-2">📞</span> Contact & Insurance</h4>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Phone</label><p class="text-lg font-medium" id="recordPhone">-</p></div>
-                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Email</label><p class="text-lg font-medium" id="recordEmail">-</p></div>
-                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Insurance Provider</label><p class="text-lg font-medium" id="recordInsurance">-</p></div>
-                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Last Updated</label><p class="text-lg font-medium" id="recordLastUpdated">-</p></div>
+                <h4 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                  <span class="text-2xl mr-2">📞</span> Contact & Insurance
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Phone</label>
+                    <p class="text-lg font-medium" id="recordPhone">-</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Email</label>
+                    <p class="text-lg font-medium" id="recordEmail">-</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Insurance Provider</label>
+                    <p class="text-lg font-medium" id="recordInsurance">-</p>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="flex justify-center pt-6">
-              <button onclick="resetAccessForm()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold">Access Another Record</button>
+              <button onclick="resetAccessForm()" 
+                      class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold transition-all">
+                Access Another Record
+              </button>
             </div>
           </div>
         </div>
@@ -421,119 +1033,437 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzV7Q95xBLei5nAfoTZz8y1MKsFMWud8QQsC53MHPuWQwRl4I3hSzu4pfIbepzGTPnO/exec";
-    let currentView = 'access-portal'; let isDoctorMode = false;
+// ========================================
+// API CONFIGURATION
+// ========================================
+// IMPORTANT: Replace this URL with your Google Apps Script Web App URL after deployment
+const API_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
 
-    function showLoading(){ document.getElementById('loadingOverlay').classList.remove('hidden') }
-    function hideLoading(){ document.getElementById('loadingOverlay').classList.add('hidden') }
-    function showToast(type,title,message,duration=5000){ const t=document.getElementById('toast'); const i=document.getElementById('toast-icon'); const tt=document.getElementById('toast-title'); const tm=document.getElementById('toast-message'); t.className='toast'; t.classList.add(type); i.innerHTML= type==='success'?'✅': type==='error'?'❌': type==='warning'?'⚠️':'ℹ️'; tt.textContent=title; tm.textContent=message; setTimeout(()=>t.classList.add('show'),50); setTimeout(()=>t.classList.remove('show'),duration) }
+// ========================================
+// UTILITY FUNCTIONS
+// ========================================
 
-    async function sendData(action,data){
-      showLoading(); const payload={...data,action};
-      try{
-        const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-        const result=await res.json(); hideLoading();
-        if(result.ok){ showToast('success','Success!',result.message||`Record ${action}ed successfully.`,5000); return {ok:true,data:result} }
-        showToast('error','Error!',result.error||'Operation failed.',7000); return {ok:false,error:result.error}
-      }catch(err){ hideLoading(); console.error(err); showToast('error','Connection Error','Failed to communicate with server: '+err.message,7000); return {ok:false,error:err} }
+function showLoading() {
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+}
+
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+function showToast(type, title, message) {
+  const toast = document.getElementById('toast');
+  const toastIcon = document.getElementById('toast-icon');
+  const toastTitle = document.getElementById('toast-title');
+  const toastMessage = document.getElementById('toast-message');
+  
+  // Set icon based on type
+  const icons = {
+    success: '✓',
+    error: '✕',
+    warning: '⚠',
+    info: 'ℹ'
+  };
+  
+  toastIcon.textContent = icons[type] || icons.info;
+  toastTitle.textContent = title;
+  toastMessage.textContent = message;
+  
+  // Remove all type classes and add current type
+  toast.classList.remove('success', 'error', 'warning', 'info');
+  toast.classList.add(type, 'show');
+  
+  // Auto hide after 4 seconds
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 4000);
+}
+
+// ========================================
+// NAVIGATION FUNCTIONS
+// ========================================
+
+function showSection(sectionId) {
+  const sections = ['access-portal', 'patient-access', 'doctor-access', 
+                    'create-carepass', 'update-records', 'access-records'];
+  
+  sections.forEach(id => {
+    const section = document.getElementById(id);
+    if (section) {
+      section.classList.remove('active');
+      section.classList.add('hidden');
     }
+  });
+  
+  const targetSection = document.getElementById(sectionId);
+  if (targetSection) {
+    targetSection.classList.remove('hidden');
+    setTimeout(() => {
+      targetSection.classList.add('active');
+    }, 50);
+  }
+}
 
-    async function fetchRecord(carePassId){
-      showLoading();
-      try{
-        const url=`${API_URL}?action=read&carePassId=${encodeURIComponent(carePassId)}`;
-        const res=await fetch(url,{method:'GET'});
-        const data=await res.json(); hideLoading();
-        if(data.ok){ showToast('success','Record Found!','Patient record loaded successfully.',3000); return data }
-        showToast('warning','Record Not Found',data.error||'No record found with this CarePass ID.',5000); return {ok:false,error:data.error}
-      }catch(err){ hideLoading(); console.error(err); showToast('error','Communication Error','Failed to retrieve data: '+err.message,7000); return {ok:false,error:err} }
-    }
+function showAccessPortal() {
+  showSection('access-portal');
+}
 
-    function hideAllSections(){ document.querySelectorAll('.fade-section').forEach(s=>{ s.classList.remove('active'); setTimeout(()=>s.classList.add('hidden'),400) }) }
-    function showSection(id){ hideAllSections(); setTimeout(()=>{ const s=document.getElementById(id); s.classList.remove('hidden'); setTimeout(()=>s.classList.add('active'),50) },450) }
-    function showAccessPortal(){ currentView='access-portal'; showSection('access-portal') }
-    function showPatientAccess(){ currentView='patient-access'; showSection('patient-access') }
-    function showDoctorAccess(){ currentView='doctor-access'; showSection('doctor-access') }
-    function showCreateCarePass(){ currentView='create-carepass'; showSection('create-carepass') }
+function showPatientAccess() {
+  showSection('patient-access');
+}
 
-    function showUpdateRecords(isDoctor){
-      currentView='update-records'; isDoctorMode=isDoctor;
-      if(isDoctor){ document.getElementById('updateBackBtn').onclick=showDoctorAccess; document.getElementById('updateTitle').innerHTML='✏️ Update Patient Records'; document.getElementById('updateSubtitle').textContent='Healthcare Provider Access'; document.getElementById('nfcLabel').textContent='Patient CarePass ID:' }
-      else{ document.getElementById('updateBackBtn').onclick=showPatientAccess; document.getElementById('updateTitle').innerHTML='📝 Update Medical Records'; document.getElementById('updateSubtitle').textContent='Comprehensive Health Information Management'; document.getElementById('nfcLabel').textContent='CarePass Authentication:' }
-      showSection('update-records'); const lastId=localStorage.getItem('lastCarePassId'); if(lastId) document.getElementById('carePassIdInputUpd').value=lastId
-    }
+function showDoctorAccess() {
+  showSection('doctor-access');
+}
 
-    function showAccessRecords(isDoctor){
-      currentView='access-records'; isDoctorMode=isDoctor;
-      if(isDoctor){ document.getElementById('accessBackBtn').onclick=showDoctorAccess; document.getElementById('accessTitle').textContent='Patient Record Access'; document.getElementById('accessSubtitle').textContent='Healthcare provider access to patient information'; document.getElementById('accessNfcLabel').textContent='Patient CarePass ID:'; document.getElementById('accessHelp').textContent='🔒 Secure access to patient medical records' }
-      else{ document.getElementById('accessBackBtn').onclick=showPatientAccess; document.getElementById('accessTitle').textContent='Patient Record Access'; document.getElementById('accessSubtitle').textContent='View your personal medical information'; document.getElementById('accessNfcLabel').textContent='CarePass ID:'; document.getElementById('accessHelp').textContent='🔒 Secure access to your medical records' }
-      showSection('access-records')
-    }
+function showCreateCarePass() {
+  showSection('create-carepass');
+}
 
-    function scanNFC(inputId){ showToast('info','NFC Scan','NFC functionality would be implemented with physical NFC hardware',3000) }
-    function addAllergy(){ const list=document.getElementById('allergiesList'); const input=document.createElement('input'); input.name='allergies[]'; input.type='text'; input.placeholder='e.g., Penicillin, Shellfish, Latex'; input.className='input-field emergency-input'; list.appendChild(input) }
-    function addMedication(){ const list=document.getElementById('medicationsList'); const input=document.createElement('input'); input.name='medications[]'; input.type='text'; input.placeholder='e.g., Metformin 500mg twice daily'; input.className='input-field emergency-input'; list.appendChild(input) }
+function showUpdateRecords(isDoctor) {
+  showSection('update-records');
+  window.currentRole = isDoctor ? 'doctor' : 'patient';
+}
 
-    function calculateBMI(){ const h=parseFloat(document.getElementById('heightInput').value); const w=parseFloat(document.getElementById('weightInput').value); const r=document.getElementById('bmiResult'); if(h>0&&w>0){ const m=h/100; const bmi=(w/(m*m)).toFixed(1); r.textContent=`BMI: ${bmi} (Body Mass Index calculated)`; r.classList.remove('hidden') } else r.classList.add('hidden') }
-    function checkBloodPressure(){ const bp=document.getElementById('bpInput').value; const warn=document.getElementById('bpWarning'); if(bp){ const parts=bp.split('/'); const s=parseInt(parts[0]); const d=parseInt(parts[1]); if(s&&d){ const abnormal=s>140||s<90||d>90||d<60; warn.classList.toggle('hidden',!abnormal) } } else warn.classList.add('hidden') }
-    function saveDraft(){ const fd=new FormData(document.getElementById('updateForm')); const data=Object.fromEntries(fd.entries()); localStorage.setItem('carePassDraft',JSON.stringify(data)); showToast('success','Draft Saved','Your changes have been saved locally',3000) }
+function showAccessRecords(isDoctor) {
+  showSection('access-records');
+  window.currentRole = isDoctor ? 'doctor' : 'patient';
+}
 
-    function displayPatientRecord(record){
-      document.getElementById('recordName').textContent=record.fullName||record.name||'N/A';
-      document.getElementById('recordDob').textContent=record.dob||'N/A';
-      document.getElementById('recordGender').textContent=record.gender||'N/A';
-      document.getElementById('recordBloodGroup').textContent=record.bloodGroup||'N/A';
-      document.getElementById('recordAllergies').textContent=(record.allergies&&record.allergies.length)?record.allergies.join(', '):'None reported';
-      document.getElementById('recordMedications').textContent=(record.medications&&record.medications.length)?record.medications.join(', '):'None reported';
-      document.getElementById('recordEmergencyContact').textContent=record.emergencyContact||'N/A';
-      const height=record.height?`${record.height} cm`:'N/A'; const weight=record.weight?`${record.weight} kg`:'N/A'; let bmi='N/A';
-      if(record.height&&record.weight){ const h=parseFloat(record.height)/100; const w=parseFloat(record.weight); bmi=(w/(h*h)).toFixed(1) }
-      document.getElementById('recordHeight').textContent=height;
-      document.getElementById('recordWeight').textContent=weight;
-      document.getElementById('recordBmi').textContent=bmi;
-      document.getElementById('recordBp').textContent=record.bp||'N/A';
-      document.getElementById('recordMedicalHistory').textContent=record.medicalHistory||'No medical history recorded';
-      document.getElementById('recordTreatmentHistory').textContent=record.treatmentHistory||'No treatment history recorded';
-      document.getElementById('recordSurgeryHistory').textContent=record.surgeryHistory||'No surgical history recorded';
-      document.getElementById('recordPhone').textContent=record.phone||'N/A';
-      document.getElementById('recordEmail').textContent=record.email||'N/A';
-      document.getElementById('recordInsurance').textContent=record.insuranceProvider||'N/A';
-      document.getElementById('recordLastUpdated').textContent=record.lastUpdated||'N/A';
-      document.getElementById('accessForm').classList.add('hidden'); document.getElementById('patientRecord').classList.remove('hidden')
-    }
-    function resetAccessForm(){ document.getElementById('carePassIdInputAcc').value=''; document.getElementById('accessForm').classList.remove('hidden'); document.getElementById('patientRecord').classList.add('hidden') }
-    async function accessPatientRecord(){
-      const id=document.getElementById('carePassIdInputAcc').value.trim();
-      if(!id){ showToast('error','Error','Please enter a CarePass ID',3000); return }
-      const result=await fetchRecord(id);
-      const record = result && (result.record || (result.data&&result.data.record));
-      if(result.ok && record){ displayPatientRecord(record) }
-    }
+// ========================================
+// API FUNCTIONS
+// ========================================
 
-    document.addEventListener('DOMContentLoaded',()=>{
-      document.getElementById('createForm').addEventListener('submit',async function(e){
-        e.preventDefault();
-        const fd=new FormData(this); const data=Object.fromEntries(fd.entries());
-        if(!data.carePassId||!data.name||!data.role){ showToast('error','Validation Error','Please fill in all required fields',3000); return }
-        // Keep both Name and Full Name consistent on registration
-        data.fullName = data.name;
-        localStorage.setItem('lastCarePassId',data.carePassId);
-        const result=await sendData('register',data); if(result.ok){ this.reset(); setTimeout(()=>showPatientAccess(),1200) }
-      });
-
-      document.getElementById('updateForm').addEventListener('submit',async function(e){
-        e.preventDefault();
-        const fd=new FormData(this); const data=Object.fromEntries(fd.entries());
-        if(!data.carePassId){ showToast('error','Validation Error','CarePass ID is required',3000); return }
-        const allergies=Array.from(document.querySelectorAll('input[name="allergies[]"]')).map(i=>i.value.trim()).filter(Boolean);
-        const medications=Array.from(document.querySelectorAll('input[name="medications[]"]')).map(i=>i.value.trim()).filter(Boolean);
-        data.allergies=allergies; data.medications=medications;
-        // Ensure Name column isn't blanked on update (mirror fullName if provided)
-        if(!data.name && data.fullName) data.name = data.fullName;
-        localStorage.setItem('lastCarePassId',data.carePassId);
-        const result=await sendData('update',data); if(result.ok){ showToast('success','Success','Record updated successfully!',3000) }
-      });
+async function registerPatient(formData) {
+  showLoading();
+  
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: 'register',
+        ...formData
+      })
     });
-  </script>
+    
+    const result = await response.json();
+    hideLoading();
+    
+    if (result.ok) {
+      showToast('success', 'Success!', result.message || 'Patient registered successfully');
+      return true;
+    } else {
+      showToast('error', 'Error', result.error || 'Failed to register patient');
+      return false;
+    }
+  } catch (error) {
+    hideLoading();
+    console.error('Registration error:', error);
+    showToast('error', 'Error', 'Network error. Please try again.');
+    return false;
+  }
+}
+
+async function updatePatientRecord(formData) {
+  showLoading();
+  
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: 'update',
+        ...formData
+      })
+    });
+    
+    const result = await response.json();
+    hideLoading();
+    
+    if (result.ok) {
+      showToast('success', 'Success!', result.message || 'Record updated successfully');
+      return true;
+    } else {
+      showToast('error', 'Error', result.error || 'Failed to update record');
+      return false;
+    }
+  } catch (error) {
+    hideLoading();
+    console.error('Update error:', error);
+    showToast('error', 'Error', 'Network error. Please try again.');
+    return false;
+  }
+}
+
+async function loadPatientRecord(carePassId) {
+  showLoading();
+  
+  try {
+    const url = ${API_URL}?action=read&carePassId=${encodeURIComponent(carePassId)};
+    const response = await fetch(url, {
+      method: 'GET'
+    });
+    
+    const result = await response.json();
+    hideLoading();
+    
+    if (result.ok && result.record) {
+      return result.record;
+    } else {
+      showToast('error', 'Not Found', result.error || 'Record not found');
+      return null;
+    }
+  } catch (error) {
+    hideLoading();
+    console.error('Load error:', error);
+    showToast('error', 'Error', 'Network error. Please try again.');
+    return null;
+  }
+}
+
+// ========================================
+// FORM HANDLERS
+// ========================================
+
+async function handleRegistration(event) {
+  event.preventDefault();
+  
+  const form = event.target;
+  const formData = {
+    carePassId: form.carePassId.value.trim(),
+    role: 'patient',
+    name: form.name.value.trim(),
+    fullName: form.fullName.value.trim(),
+    dob: form.dob.value,
+    gender: form.gender.value,
+    bloodGroup: form.bloodGroup.value,
+    height: form.height.value,
+    weight: form.weight.value,
+    phone: form.phone.value.trim(),
+    email: form.email.value.trim(),
+    emergencyContact: form.emergencyContact.value.trim(),
+    allergies: form.allergies.value.split(',').map(a => a.trim()).filter(a => a),
+    medications: form.medications.value.split(',').map(m => m.trim()).filter(m => m),
+    medicalHistory: form.medicalHistory.value.trim(),
+    insuranceProvider: form.insuranceProvider.value.trim()
+  };
+  
+  const success = await registerPatient(formData);
+  if (success) {
+    form.reset();
+    setTimeout(() => showPatientAccess(), 2000);
+  }
+}
+
+async function handleUpdate(event) {
+  event.preventDefault();
+  
+  const form = event.target;
+  const formData = {
+    carePassId: form.carePassId.value.trim(),
+    role: window.currentRole || 'patient',
+    name: form.name.value.trim(),
+    fullName: form.fullName.value.trim(),
+    dob: form.dob.value,
+    gender: form.gender.value,
+    bloodGroup: form.bloodGroup.value,
+    height: form.height.value,
+    weight: form.weight.value,
+    bp: form.bp?.value || '',
+    phone: form.phone.value.trim(),
+    email: form.email.value.trim(),
+    emergencyContact: form.emergencyContact.value.trim(),
+    allergies: form.allergies.value.split(',').map(a => a.trim()).filter(a => a),
+    medications: form.medications.value.split(',').map(m => m.trim()).filter(m => m),
+    medicalHistory: form.medicalHistory.value.trim(),
+    treatmentHistory: form.treatmentHistory?.value.trim() || '',
+    surgeryHistory: form.surgeryHistory?.value.trim() || '',
+    insuranceProvider: form.insuranceProvider.value.trim()
+  };
+  
+  const success = await updatePatientRecord(formData);
+  if (success) {
+    setTimeout(() => {
+      if (window.currentRole === 'doctor') {
+        showDoctorAccess();
+      } else {
+        showPatientAccess();
+      }
+    }, 2000);
+  }
+}
+
+async function handleAccessRecord(event) {
+  event.preventDefault();
+  
+  const form = event.target;
+  const carePassId = form.carePassId.value.trim();
+  
+  if (!carePassId) {
+    showToast('warning', 'Required', 'Please enter a CarePass ID');
+    return;
+  }
+  
+  const record = await loadPatientRecord(carePassId);
+  if (record) {
+    displayPatientRecord(record);
+  }
+}
+
+// ========================================
+// DISPLAY FUNCTIONS
+// ========================================
+
+function displayPatientRecord(record) {
+  const displaySection = document.getElementById('record-display');
+  if (!displaySection) return;
+  
+  // Build HTML for record display
+  let html = `
+    <div class="medical-card p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-3xl font-bold text-gray-800">Patient Record</h2>
+        <span class="px-4 py-2 bg-health-green text-white rounded-lg font-semibold">
+          ${record.carePassId}
+        </span>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Personal Information -->
+        <div class="space-y-4">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Personal Information</h3>
+          <div>
+            <label class="text-sm text-gray-600">Full Name</label>
+            <p class="text-lg font-semibold text-gray-800">${record.fullName || 'N/A'}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-600">Date of Birth</label>
+            <p class="text-lg font-semibold text-gray-800">${record.dob || 'N/A'}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-600">Gender</label>
+            <p class="text-lg font-semibold text-gray-800">${record.gender || 'N/A'}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-600">Blood Group</label>
+            <p class="text-lg font-semibold text-gray-800">${record.bloodGroup || 'N/A'}</p>
+          </div>
+        </div>
+        
+        <!-- Contact Information -->
+        <div class="space-y-4">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Contact Information</h3>
+          <div>
+            <label class="text-sm text-gray-600">Phone</label>
+            <p class="text-lg font-semibold text-gray-800">${record.phone || 'N/A'}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-600">Email</label>
+            <p class="text-lg font-semibold text-gray-800">${record.email || 'N/A'}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-600">Emergency Contact</label>
+            <p class="text-lg font-semibold text-gray-800">${record.emergencyContact || 'N/A'}</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Medical Information -->
+      <div class="mt-8 pt-8 border-t border-gray-200">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Medical Information</h3>
+        <div class="grid md:grid-cols-3 gap-6 mb-6">
+          <div>
+            <label class="text-sm text-gray-600">Height</label>
+            <p class="text-lg font-semibold text-gray-800">${record.height ? record.height + ' cm' : 'N/A'}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-600">Weight</label>
+            <p class="text-lg font-semibold text-gray-800">${record.weight ? record.weight + ' kg' : 'N/A'}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-600">Blood Pressure</label>
+            <p class="text-lg font-semibold text-gray-800">${record.bp || 'N/A'}</p>
+          </div>
+        </div>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm text-gray-600">Allergies</label>
+            <p class="text-gray-800">${Array.isArray(record.allergies) && record.allergies.length > 0 ? record.allergies.join(', ') : 'None recorded'}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-600">Current Medications</label>
+            <p class="text-gray-800">${Array.isArray(record.medications) && record.medications.length > 0 ? record.medications.join(', ') : 'None recorded'}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-600">Medical History</label>
+            <p class="text-gray-800">${record.medicalHistory || 'None recorded'}</p>
+          </div>
+          ${record.treatmentHistory ? `
+          <div>
+            <label class="text-sm text-gray-600">Treatment History</label>
+            <p class="text-gray-800">${record.treatmentHistory}</p>
+          </div>
+          ` : ''}
+          ${record.surgeryHistory ? `
+          <div>
+            <label class="text-sm text-gray-600">Surgical History</label>
+            <p class="text-gray-800">${record.surgeryHistory}</p>
+          </div>
+          ` : ''}
+        </div>
+      </div>
+      
+      <!-- Insurance -->
+      <div class="mt-8 pt-8 border-t border-gray-200">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Insurance Information</h3>
+        <div>
+          <label class="text-sm text-gray-600">Provider</label>
+          <p class="text-lg font-semibold text-gray-800">${record.insuranceProvider || 'N/A'}</p>
+        </div>
+      </div>
+      
+      <div class="mt-8 text-sm text-gray-500">
+        Last updated: ${record.lastUpdated ? new Date(record.lastUpdated).toLocaleString() : 'N/A'}
+      </div>
+    </div>
+  `;
+  
+  displaySection.innerHTML = html;
+  displaySection.classList.remove('hidden');
+}
+
+// ========================================
+// NFC SIMULATION (Placeholder)
+// ========================================
+
+async function simulateNFCScan(inputId) {
+  // This is a placeholder for NFC functionality
+  // In a real implementation, this would interface with NFC hardware
+  showToast('info', 'NFC Scan', 'NFC functionality requires specialized hardware');
+  
+  // For demo purposes, you could generate a random ID
+  // const randomId = 'CP' + Math.random().toString(36).substr(2, 9).toUpperCase();
+  // document.getElementById(inputId).value = randomId;
+}
+
+// ========================================
+// INITIALIZATION
+// ========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('CarePass Portal Initialized');
+  
+  // Check if API_URL is configured
+  if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+    console.warn('⚠ API_URL not configured. Please update with your Google Apps Script Web App URL');
+  }
+});
+</script>
 </body>
 </html>
