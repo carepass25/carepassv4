@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CarePass – Your Key to Secure Health Data</title>
+  <meta name="description" content="Secure digital health records with NFC technology for patients and healthcare providers. HIPAA compliant medical data management." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'medical-blue': { DEFAULT: '#3b82f6', light: '#dbeafe', dark: '#1d4ed8' },
+            'health-green': { DEFAULT: '#059669', light: '#dcfce7', dark: '#047857' },
+            'doctor-purple': { DEFAULT: '#7c3aed', light: '#ede9fe', dark: '#5b21b6' },
+            'emergency-red': { DEFAULT: '#dc2626', light: '#fef2f2', dark: '#991b1b' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:white; min-height:100vh }
+    .fade-section { opacity:0; transform:scale(.98); transition:all .4s cubic-bezier(.4,0,.2,1) }
+    .fade-section.active { opacity:1; transform:scale(1) }
+    .btn-medical { background:linear-gradient(135deg,#3b82f6,#60a5fa); transition:.3s; border-radius:.75rem; color:#fff; font-weight:600; box-shadow:0 10px 25px -5px rgba(59,130,246,.15) }
+    .btn-medical:hover { box-shadow:0 0 20px rgba(96,165,250,.3); transform:translateY(-2px) }
+    .btn-health { background:linear-gradient(135deg,#059669,#34d399); transition:.3s; border-radius:.75rem; color:#fff; font-weight:600; box-shadow:0 10px 25px -5px rgba(5,150,105,.15) }
+    .btn-health:hover { box-shadow:0 0 20px rgba(52,211,153,.3); transform:translateY(-2px) }
+    .btn-care { background:linear-gradient(135deg,#7c3aed,#a78bfa); transition:.3s; border-radius:.75rem; color:#fff; font-weight:600; box-shadow:0 10px 25px -5px rgba(124,58,237,.15) }
+    .btn-care:hover { box-shadow:0 0 20px rgba(167,139,250,.3); transform:translateY(-2px) }
+    .btn-nfc { background:linear-gradient(135deg,#7c3aed,#a78bfa); transition:.3s; color:#fff; border-radius:.75rem; min-width:4rem; font-size:.875rem; font-weight:600 }
+    .btn-nfc:hover { box-shadow:0 0 20px rgba(167,139,250,.3); transform:translateY(-1px) }
+    .medical-card { background:#fff; border-radius:.75rem; box-shadow:0 4px 12px -2px rgba(15,23,42,.08); border:1px solid rgba(226,232,240,.8) }
+    .emergency-section { background:linear-gradient(135deg,#fef2f2,#fce7e7); border:2px solid rgba(220,38,38,.2); border-radius:.75rem }
+    .input-field,.select-field { width:100%; border:2px solid #e5e7eb; padding:.75rem; border-radius:.5rem; font-size:1rem; background:#fff; transition:border-color .3s }
+    .input-field:focus,.select-field:focus { outline:0; border-color:#3b82f6 }
+    .textarea-field { width:100%; border:2px solid #e5e7eb; padding:.75rem; border-radius:.5rem; font-size:1rem; resize:vertical; background:#fff; min-height:100px; transition:border-color .3s }
+    .textarea-field:focus { outline:0; border-color:#3b82f6 }
+    .emergency-input { border-color:#dc2626 !important }
+    .emergency-input:focus { border-color:#dc2626 !important }
+    .nfc-input-group { display:flex; gap:.5rem; align-items:stretch }
+    .nfc-input-group input { flex:1; min-width:0 }
+    .spinner { border:4px solid #f3f4f6; border-top:4px solid #3b82f6; border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite }
+    @keyframes spin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+    .toast { position:fixed; top:1.5rem; right:1.5rem; padding:1rem 1.5rem; border-radius:.5rem; box-shadow:0 10px 15px -3px rgba(0,0,0,.1); color:#fff; max-width:20rem; z-index:50; transform:translateX(100%); transition:transform .3s }
+    .toast.show { transform:translateX(0) } .toast.success{background:#059669}.toast.error{background:#dc2626}.toast.warning{background:#d97706}.toast.info{background:#3b82f6}
+    .hidden{display:none!important}
+  </style>
+</head>
+<body class="bg-white min-h-screen">
+  <div id="loadingOverlay" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white p-8 rounded-2xl shadow-lg flex flex-col items-center space-y-4">
+      <div class="spinner"></div><p class="text-gray-700 font-medium text-lg">Processing your request...</p>
+    </div>
+  </div>
+  <div id="toast" class="toast"><div class="flex items-center space-x-3"><div id="toast-icon" class="text-xl"></div><div><div id="toast-title" class="font-semibold"></div><div id="toast-message" class="text-sm opacity-90"></div></div></div></div>
+
+  <!-- Access Portal -->
+  <div id="access-portal" class="min-h-screen bg-gradient-to-br from-white to-slate-50 flex items-center justify-center p-4 fade-section active">
+    <div class="w-full max-w-4xl">
+      <div class="text-center mb-12">
+        <div class="mb-6"><div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-6"><span class="text-4xl text-white">🏥</span></div></div>
+        <h1 class="text-5xl font-bold text-gray-800 mb-4">CarePass Portal</h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Your secure gateway to digital health records with NFC technology</p>
+        <div class="flex items-center justify-center space-x-2 text-sm text-gray-500 mt-6"><span>🔒</span><span>End-to-End Encrypted</span><span>•</span><span>HIPAA Compliant</span></div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+        <div class="medical-card hover:shadow-xl transition-all duration-300 cursor-pointer group" onclick="showPatientAccess()">
+          <div class="text-center pb-4 p-6">
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-400 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-2xl text-white">👤</span></div>
+            <h2 class="text-2xl text-gray-800 font-bold">Patient Access</h2><p class="text-gray-600 mt-2">Manage your personal health records</p>
+          </div>
+          <div class="px-6 pb-6 space-y-3">
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">📝</span><span>Create CarePass</span></div>
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">🔄</span><span>Update Medical Records</span></div>
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">📋</span><span>Access Patient Records</span></div>
+            <button class="btn-medical w-full text-white px-6 py-4 rounded-xl transition-all mt-6">Enter Patient Portal</button>
+          </div>
+        </div>
+        <div class="medical-card hover:shadow-xl transition-all duration-300 cursor-pointer group" onclick="showDoctorAccess()">
+          <div class="text-center pb-4 p-6">
+            <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-500 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-2xl text-white">🧑‍⚕️</span></div>
+            <h2 class="text-2xl text-gray-800 font-bold">Doctor Access</h2><p class="text-gray-600 mt-2">Healthcare provider portal</p>
+          </div>
+          <div class="px-6 pb-6 space-y-3">
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">🔍</span><span>Access Patient Records</span></div>
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">✏️</span><span>Update Patient Records</span></div>
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">🩺</span><span>Medical Consultation</span></div>
+            <button class="btn-care w-full text-white px-6 py-4 rounded-xl mt-6">Enter Doctor Portal</button>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-16 text-gray-500"><p class="text-sm">Protected by advanced encryption and HIPAA compliance standards</p></div>
+    </div>
+  </div>
+
+  <!-- Patient Access -->
+  <div id="patient-access" class="hidden min-h-screen bg-gradient-to-br from-white to-blue-50 flex items-center justify-center p-4 fade-section">
+    <div class="w-full max-w-4xl">
+      <div class="text-center mb-12">
+        <button onclick="showAccessPortal()" class="mb-8 text-blue-600 hover:text-blue-700 transition-colors">← Back to Portal</button>
+        <div class="mb-6"><div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-400 rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-6"><span class="text-3xl text-white">👤</span></div></div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Patient Portal</h1>
+        <p class="text-lg text-gray-600">Manage your personal health information securely</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="medical-card hover:shadow-lg transition-all duration-300 cursor-pointer group" onclick="showCreateCarePass()">
+          <div class="text-center p-6">
+            <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-400 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-xl text-white">📝</span></div>
+            <h3 class="text-lg text-gray-800 font-bold">Create CarePass</h3><p class="text-sm text-gray-600 mt-2">Join the secure healthcare network</p>
+          </div>
+          <div class="px-6 pb-6">
+            <ul class="space-y-2 text-sm text-gray-600 mb-4"><li>• Secure digital identity</li><li>• NFC-enabled access</li><li>• HIPAA compliant</li></ul>
+            <button class="btn-health w-full text-white px-6 py-3 rounded-xl text-sm">Get Started</button>
+          </div>
+        </div>
+        <div class="medical-card hover:shadow-lg transition-all duration-300 cursor-pointer group" onclick="showUpdateRecords(false)">
+          <div class="text-center p-6">
+            <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-400 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-xl text-white">🔄</span></div>
+            <h3 class="text-lg text-gray-800 font-bold">Update Records</h3><p class="text-sm text-gray-600 mt-2">Comprehensive health information management</p>
+          </div>
+          <div class="px-6 pb-6">
+            <ul class="space-y-2 text-sm text-gray-600 mb-4"><li>• Personal information</li><li>• Medical history</li><li>• Emergency contacts</li></ul>
+            <button class="btn-medical w-full text-white px-6 py-3 rounded-xl text-sm">Update Now</button>
+          </div>
+        </div>
+        <div class="medical-card hover:shadow-lg transition-all duration-300 cursor-pointer group" onclick="showAccessRecords(false)">
+          <div class="text-center p-6">
+            <div class="w-14 h-14 bg-gradient-to-br from-purple-600 to-purple-500 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-xl text-white">📋</span></div>
+            <h3 class="text-lg text-gray-800 font-bold">View Records</h3><p class="text-sm text-gray-600 mt-2">Access your personal medical data</p>
+          </div>
+          <div class="px-6 pb-6">
+            <ul class="space-y-2 text-sm text-gray-600 mb-4"><li>• Complete medical history</li><li>• Vital signs tracking</li><li>• Secure access</li></ul>
+            <button class="btn-care w-full text-white px-6 py-3 rounded-xl text-sm">View Records</button>
+          </div>
+        </div>
+      </div>
+      <div class="mt-12 text-center">
+        <div class="bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl p-6 max-w-2xl mx-auto">
+          <div class="flex items-center justify-center space-x-2 text-gray-600"><span class="text-xl">💡</span><p class="text-sm">All your health information is encrypted and accessible only with your CarePass ID</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Doctor Access -->
+  <div id="doctor-access" class="hidden min-h-screen bg-gradient-to-br from-white to-purple-50 flex items-center justify-center p-4 fade-section">
+    <div class="w-full max-w-3xl">
+      <div class="text-center mb-12">
+        <button onclick="showAccessPortal()" class="mb-8 text-purple-600 hover:text-purple-700 transition-colors">← Back to Portal</button>
+        <div class="mb-6"><div class="w-20 h-20 bg-gradient-to-br from-purple-600 to-purple-500 rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-6"><span class="text-3xl text-white">🧑‍⚕️</span></div></div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Healthcare Provider Portal</h1>
+        <p class="text-lg text-gray-600">Secure patient record access and management</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="medical-card hover:shadow-lg transition-all duration-300 cursor-pointer group" onclick="showAccessRecords(true)">
+          <div class="text-center p-6">
+            <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-500 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-2xl text-white">🔍</span></div>
+            <h3 class="text-xl text-gray-800 font-bold">Access Patient Records</h3><p class="text-gray-600 mt-2">View comprehensive patient medical information</p>
+          </div>
+          <div class="px-6 pb-6 space-y-3">
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">📋</span><span>Complete medical history</span></div>
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">🩺</span><span>Vital signs and measurements</span></div>
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">🚨</span><span>Critical medical information</span></div>
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">📞</span><span>Contact and insurance details</span></div>
+            <button class="btn-care w-full text-white px-6 py-4 rounded-xl mt-6">Access Records</button>
+          </div>
+        </div>
+        <div class="medical-card hover:shadow-lg transition-all duration-300 cursor-pointer group" onclick="showUpdateRecords(true)">
+          <div class="text-center p-6">
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-400 rounded-xl mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><span class="text-2xl text-white">✏️</span></div>
+            <h3 class="text-xl text-gray-800 font-bold">Update Patient Records</h3><p class="text-gray-600 mt-2">Modify and update patient medical information</p>
+          </div>
+          <div class="px-6 pb-6 space-y-3">
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">📝</span><span>Update medical history</span></div>
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">💊</span><span>Manage medications</span></div>
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">🔄</span><span>Update vital signs</span></div>
+            <div class="flex items-center space-x-3 text-gray-700"><span class="text-lg">📊</span><span>Treatment plans</span></div>
+            <button class="btn-medical w-full text-white px-6 py-4 rounded-xl mt-6">Update Records</button>
+          </div>
+        </div>
+      </div>
+      <div class="mt-12">
+        <div class="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-xl p-6">
+          <div class="flex items-center space-x-3 text-purple-800">
+            <span class="text-2xl">⚠️</span>
+            <div><h3 class="font-semibold">Healthcare Provider Notice</h3>
+              <p class="text-sm text-purple-700 mt-1">All patient information accessed through this portal is protected under HIPAA regulations. Healthcare provider authentication is required for all actions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create CarePass -->
+  <div id="create-carepass" class="hidden min-h-screen bg-gradient-to-br from-white to-green-50 flex items-center justify-center p-4 fade-section">
+    <div class="w-full max-w-md">
+      <div class="medical-card">
+        <div class="p-6 border-b border-gray-100">
+          <button onclick="showPatientAccess()" class="mb-4 text-green-600 hover:text-green-700 flex items-center space-x-2 transition-colors"><span>←</span><span>Back to Menu</span></button>
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-400 rounded-xl mx-auto flex items-center justify-center mb-4"><span class="text-2xl text-white">📝</span></div>
+            <h2 class="text-2xl font-bold text-gray-800">Create Your CarePass</h2><p class="text-gray-600 mt-2">Join the secure healthcare network</p>
+          </div>
+        </div>
+        <div class="p-6">
+          <form id="createForm" class="space-y-6">
+            <div><label class="block font-semibold mb-2 text-gray-700">Role:</label>
+              <select name="role" required class="select-field">
+                <option value="">Select your role</option>
+                <option value="patient">👤 Patient</option>
+                <option value="doctor">🧑‍⚕️ Healthcare Provider</option>
+              </select>
+            </div>
+            <div><label class="block font-semibold mb-2 text-gray-700">Full Name:</label>
+              <input name="name" type="text" required placeholder="Enter your full name" class="input-field" />
+            </div>
+            <div><label class="block font-semibold mb-2 text-gray-700">CarePass ID (NFC Security):</label>
+              <div class="nfc-input-group">
+                <input id="carePassIdInput" name="carePassId" type="password" required placeholder="Tap NFC card or enter secure ID" class="input-field" />
+                <button type="button" onclick="scanNFC('carePassIdInput')" class="btn-nfc text-white px-3 py-2 rounded-xl">📡</button>
+              </div>
+              <p class="text-sm text-gray-500 mt-2">🔒 Your secure healthcare identifier</p>
+            </div>
+            <button type="submit" class="btn-health w-full text-white px-6 py-4 rounded-xl text-lg font-semibold">Create Secure CarePass</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Records -->
+  <div id="update-records" class="hidden min-h-screen p-4 fade-section bg-white">
+    <div class="max-w-4xl mx-auto">
+      <div class="medical-card">
+        <div class="p-6 border-b border-gray-100">
+          <button id="updateBackBtn" onclick="showPatientAccess()" class="text-blue-600 hover:text-blue-700 flex items-center space-x-2 mb-4 transition-colors"><span>←</span><span>Back to Menu</span></button>
+          <h2 id="updateTitle" class="text-3xl font-bold text-center text-gray-800">📝 Update Medical Records</h2>
+          <p id="updateSubtitle" class="text-center text-gray-600 mt-2">Comprehensive Health Information Management</p>
+        </div>
+        <div class="p-6">
+          <form id="updateForm" class="space-y-8">
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+              <label class="block font-semibold mb-3 text-gray-800">🔐 <span id="nfcLabel">CarePass Authentication:</span></label>
+              <div class="nfc-input-group">
+                <input id="carePassIdInputUpd" name="carePassId" type="password" required placeholder="Tap NFC card or enter your CarePass ID" class="input-field" />
+                <button type="button" onclick="scanNFC('carePassIdInputUpd')" class="btn-nfc text-white px-3 py-2 rounded-xl">📡</button>
+              </div>
+            </div>
+
+            <div class="space-y-6">
+              <h3 class="text-xl font-bold text-gray-800 border-b border-gray-200 pb-2">👤 Personal Information</h3>
+              <div><label class="block font-semibold mb-2 text-gray-700">Full Legal Name:</label><input name="fullName" type="text" placeholder="Full Legal Name" class="input-field" /></div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div><label class="block font-semibold mb-2 text-gray-700">Date of Birth:</label><input name="dob" type="date" class="input-field" /></div>
+                <div><label class="block font-semibold mb-2 text-gray-700">Gender:</label>
+                  <select name="gender" class="select-field">
+                    <option value="">Select Gender</option><option value="Male ♂">Male ♂</option><option value="Female ♀">Female ♀</option><option value="Other ⚧">Other ⚧</option>
+                  </select>
+                </div>
+              </div>
+              <div><label class="block font-semibold mb-2 text-gray-700">Blood Group:</label>
+                <select name="bloodGroup" class="select-field">
+                  <option value="">Select Blood Group</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="space-y-6">
+              <h3 class="text-xl font-bold text-gray-800 border-b border-gray-200 pb-2">🩺 Vital Signs & Measurements</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div><label class="block font-semibold mb-2 text-gray-700">Height (cm):</label><input id="heightInput" name="height" type="number" placeholder="Height in centimeters" class="input-field" oninput="calculateBMI()" /></div>
+                <div><label class="block font-semibold mb-2 text-gray-700">Weight (kg):</label><input id="weightInput" name="weight" type="number" placeholder="Weight in kilograms" class="input-field" oninput="calculateBMI()" /></div>
+              </div>
+              <div id="bmiResult" class="text-lg font-semibold text-green-600 bg-green-50 p-3 rounded-lg hidden"></div>
+              <div>
+                <label class="block font-semibold mb-2 text-gray-700">Blood Pressure (e.g., 120/80):</label>
+                <input id="bpInput" name="bp" type="text" placeholder="Systolic/Diastolic (e.g., 120/80)" class="input-field" oninput="checkBloodPressure()" />
+                <div id="bpWarning" class="hidden bg-red-50 border border-red-300 text-red-600 p-3 rounded-lg mt-3"><div class="flex items-center space-x-2"><span class="text-xl">⚠️</span><span class="font-semibold">Abnormal blood pressure detected! Please consult your healthcare provider.</span></div></div>
+              </div>
+            </div>
+
+            <div class="emergency-section p-6">
+              <h3 class="text-xl font-bold text-red-600 mb-4 flex items-center space-x-2"><span>🚨</span><span>Critical Medical Information</span></h3>
+              <div class="space-y-6">
+                <div>
+                  <label class="block font-bold mb-3 text-red-600">Known Allergies:</label>
+                  <div id="allergiesList" class="space-y-3"><input name="allergies[]" type="text" placeholder="e.g., Penicillin, Shellfish, Latex" class="input-field emergency-input" /></div>
+                  <button type="button" onclick="addAllergy()" class="mt-3 text-red-600 hover:text-red-700 font-semibold">+ Add Another Allergy</button>
+                </div>
+                <div>
+                  <label class="block font-bold mb-3 text-red-600">Current Medications:</label>
+                  <div id="medicationsList" class="space-y-3"><input name="medications[]" type="text" placeholder="e.g., Metformin 500mg twice daily" class="input-field emergency-input" /></div>
+                  <button type="button" onclick="addMedication()" class="mt-3 text-red-600 hover:text-red-700 font-semibold">+ Add Another Medication</button>
+                </div>
+                <div><label class="block font-bold mb-2 text-red-600">Emergency Contact:</label><input name="emergencyContact" type="text" placeholder="Name & Phone Number" class="input-field emergency-input" /></div>
+              </div>
+            </div>
+
+            <div class="space-y-6">
+              <h3 class="text-xl font-bold text-gray-800 border-b border-gray-200 pb-2">📋 Medical History</h3>
+              <div><label class="block font-semibold mb-2 text-gray-700">Medical History & Chronic Conditions:</label><textarea name="medicalHistory" rows="4" placeholder="List chronic diseases, ongoing conditions, genetic predispositions..." class="textarea-field"></textarea></div>
+              <div><label class="block font-semibold mb-2 text-gray-700">Treatment History:</label><textarea name="treatmentHistory" rows="4" placeholder="Previous treatments, therapies, rehabilitation..." class="textarea-field"></textarea></div>
+              <div><label class="block font-semibold mb-2 text-gray-700">Surgical History:</label><textarea name="surgeryHistory" rows="4" placeholder="Previous surgeries, procedures, implants, dates..." class="textarea-field"></textarea></div>
+            </div>
+
+            <div class="space-y-6">
+              <h3 class="text-xl font-bold text-gray-800 border-b border-gray-200 pb-2">📞 Contact & Insurance Information</h3>
+              <div><label class="block font-semibold mb-2 text-gray-700">Insurance Provider:</label><input name="insuranceProvider" type="text" placeholder="Insurance Company Name & Policy Number" class="input-field" /></div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div><label class="block font-semibold mb-2 text-gray-700">Phone Number:</label><input name="phone" type="tel" placeholder="Primary Phone Number" class="input-field" /></div>
+                <div><label class="block font-semibold mb-2 text-gray-700">Email Address:</label><input name="email" type="email" placeholder="Email Address" class="input-field" /></div>
+              </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-4 pt-6">
+              <button type="button" onclick="saveDraft()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold">💾 Save Draft Locally</button>
+              <button type="submit" class="flex-1 btn-health text-white px-6 py-3 rounded-xl font-semibold">✅ Update CarePass Record</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Access Records -->
+  <div id="access-records" class="hidden min-h-screen bg-gradient-to-br from-white to-purple-50 p-4 fade-section">
+    <div class="max-w-6xl mx-auto">
+      <div class="medical-card">
+        <div class="p-6 border-b border-gray-100">
+          <button id="accessBackBtn" onclick="showPatientAccess()" class="mb-4 text-purple-600 hover:text-purple-700 transition-colors">← Back to Menu</button>
+          <div class="text-center"><h2 id="accessTitle" class="text-3xl text-gray-800 font-bold">Patient Record Access</h2><p id="accessSubtitle" class="text-gray-600 mt-2">View your personal medical information</p></div>
+        </div>
+        <div class="p-6">
+          <div id="accessForm" class="space-y-6 mb-8">
+            <div class="bg-purple-50 p-6 rounded-xl border border-purple-200">
+              <label class="text-gray-800 font-semibold mb-3 block">🔐 <span id="accessNfcLabel">CarePass ID:</span></label>
+              <div class="nfc-input-group">
+                <input id="carePassIdInputAcc" type="password" required placeholder="Tap NFC card or enter your CarePass ID" class="input-field" />
+                <button type="button" onclick="scanNFC('carePassIdInputAcc')" class="btn-nfc text-white px-3 py-2 rounded-xl">📡</button>
+              </div>
+              <p id="accessHelp" class="text-sm text-gray-600 mt-2">🔒 Secure access to your medical records</p>
+            </div>
+            <button onclick="accessPatientRecord()" class="btn-care w-full text-white px-6 py-4 rounded-xl text-lg font-semibold">🔍 Access Patient Record</button>
+          </div>
+
+          <div id="patientRecord" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 rounded-xl text-center">
+              <h3 class="text-2xl font-bold mb-2">📋 Patient Medical Record</h3><p class="opacity-90">Confidential Healthcare Information</p>
+              <div class="bg-white/20 p-3 rounded-lg mt-4"><p class="text-sm">⚠️ This information is protected under HIPAA regulations</p></div>
+            </div>
+
+            <div class="medical-card border-l-4 border-blue-500">
+              <div class="p-6">
+                <h4 class="text-xl font-bold text-blue-600 mb-4 flex items-center"><span class="text-2xl mr-2">👤</span> Patient Identity</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Full Name</label><p class="text-lg font-medium" id="recordName">-</p></div>
+                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Date of Birth</label><p class="text-lg font-medium" id="recordDob">-</p></div>
+                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Gender</label><p class="text-lg font-medium" id="recordGender">-</p></div>
+                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Blood Group</label><p class="text-lg font-bold text-red-600" id="recordBloodGroup">-</p></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="emergency-section border-l-4 border-red-500">
+              <div class="p-6">
+                <h4 class="text-xl font-bold text-red-600 mb-4 flex items-center"><span class="text-2xl mr-2">🚨</span> Critical Medical Information</h4>
+                <div class="space-y-4">
+                  <div><label class="block text-sm font-bold text-red-600 mb-2">Known Allergies</label><div class="bg-white border border-red-300 rounded-lg p-4"><p class="font-medium" id="recordAllergies">-</p></div></div>
+                  <div><label class="block text-sm font-bold text-red-600 mb-2">Current Medications</label><div class="bg-white border border-red-300 rounded-lg p-4"><p class="font-medium" id="recordMedications">-</p></div></div>
+                  <div><label class="block text-sm font-bold text-red-600 mb-2">Emergency Contact</label><div class="bg-white border border-red-300 rounded-lg p-4 flex items-center"><span class="text-xl mr-3">📞</span><p class="font-medium" id="recordEmergencyContact">-</p></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="medical-card border-l-4 border-green-500">
+              <div class="p-6">
+                <h4 class="text-xl font-bold text-green-600 mb-4 flex items-center"><span class="text-2xl mr-2">🩺</span> Vital Signs & Measurements</h4>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <div class="text-center p-4 bg-green-50 rounded-lg"><label class="text-sm font-semibold text-gray-600 mb-1 block">Height</label><p class="text-2xl font-bold text-green-600" id="recordHeight">-</p></div>
+                  <div class="text-center p-4 bg-green-50 rounded-lg"><label class="text-sm font-semibold text-gray-600 mb-1 block">Weight</label><p class="text-2xl font-bold text-green-600" id="recordWeight">-</p></div>
+                  <div class="text-center p-4 bg-green-50 rounded-lg"><label class="text-sm font-semibold text-gray-600 mb-1 block">BMI</label><p class="text-2xl font-bold text-green-600" id="recordBmi">-</p></div>
+                  <div class="text-center p-4 bg-green-50 rounded-lg"><label class="text-sm font-semibold text-gray-600 mb-1 block">Blood Pressure</label><p class="text-2xl font-bold text-green-600" id="recordBp">-</p></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="medical-card border-l-4 border-indigo-500">
+              <div class="p-6">
+                <h4 class="text-xl font-bold text-indigo-600 mb-4 flex items-center"><span class="text-2xl mr-2">🗂️</span> Medical & Treatment History</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Medical History</label><p class="text-sm md:text-base font-medium" id="recordMedicalHistory">-</p></div>
+                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Treatment History</label><p class="text-sm md:text-base font-medium" id="recordTreatmentHistory">-</p></div>
+                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Surgical History</label><p class="text-sm md:text-base font-medium" id="recordSurgeryHistory">-</p></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="medical-card">
+              <div class="p-6">
+                <h4 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><span class="text-2xl mr-2">📞</span> Contact & Insurance</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Phone</label><p class="text-lg font-medium" id="recordPhone">-</p></div>
+                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Email</label><p class="text-lg font-medium" id="recordEmail">-</p></div>
+                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Insurance Provider</label><p class="text-lg font-medium" id="recordInsurance">-</p></div>
+                  <div><label class="block text-sm font-semibold text-gray-600 mb-1">Last Updated</label><p class="text-lg font-medium" id="recordLastUpdated">-</p></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-center pt-6">
+              <button onclick="resetAccessForm()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold">Access Another Record</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbzV7Q95xBLei5nAfoTZz8y1MKsFMWud8QQsC53MHPuWQwRl4I3hSzu4pfIbepzGTPnO/exec";
+    let currentView = 'access-portal'; let isDoctorMode = false;
+
+    function showLoading(){ document.getElementById('loadingOverlay').classList.remove('hidden') }
+    function hideLoading(){ document.getElementById('loadingOverlay').classList.add('hidden') }
+    function showToast(type,title,message,duration=5000){ const t=document.getElementById('toast'); const i=document.getElementById('toast-icon'); const tt=document.getElementById('toast-title'); const tm=document.getElementById('toast-message'); t.className='toast'; t.classList.add(type); i.innerHTML= type==='success'?'✅': type==='error'?'❌': type==='warning'?'⚠️':'ℹ️'; tt.textContent=title; tm.textContent=message; setTimeout(()=>t.classList.add('show'),50); setTimeout(()=>t.classList.remove('show'),duration) }
+
+    async function sendData(action,data){
+      showLoading(); const payload={...data,action};
+      try{
+        const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        const result=await res.json(); hideLoading();
+        if(result.ok){ showToast('success','Success!',result.message||`Record ${action}ed successfully.`,5000); return {ok:true,data:result} }
+        showToast('error','Error!',result.error||'Operation failed.',7000); return {ok:false,error:result.error}
+      }catch(err){ hideLoading(); console.error(err); showToast('error','Connection Error','Failed to communicate with server: '+err.message,7000); return {ok:false,error:err} }
+    }
+
+    async function fetchRecord(carePassId){
+      showLoading();
+      try{
+        const url=`${API_URL}?action=read&carePassId=${encodeURIComponent(carePassId)}`;
+        const res=await fetch(url,{method:'GET'});
+        const data=await res.json(); hideLoading();
+        if(data.ok){ showToast('success','Record Found!','Patient record loaded successfully.',3000); return data }
+        showToast('warning','Record Not Found',data.error||'No record found with this CarePass ID.',5000); return {ok:false,error:data.error}
+      }catch(err){ hideLoading(); console.error(err); showToast('error','Communication Error','Failed to retrieve data: '+err.message,7000); return {ok:false,error:err} }
+    }
+
+    function hideAllSections(){ document.querySelectorAll('.fade-section').forEach(s=>{ s.classList.remove('active'); setTimeout(()=>s.classList.add('hidden'),400) }) }
+    function showSection(id){ hideAllSections(); setTimeout(()=>{ const s=document.getElementById(id); s.classList.remove('hidden'); setTimeout(()=>s.classList.add('active'),50) },450) }
+    function showAccessPortal(){ currentView='access-portal'; showSection('access-portal') }
+    function showPatientAccess(){ currentView='patient-access'; showSection('patient-access') }
+    function showDoctorAccess(){ currentView='doctor-access'; showSection('doctor-access') }
+    function showCreateCarePass(){ currentView='create-carepass'; showSection('create-carepass') }
+
+    function showUpdateRecords(isDoctor){
+      currentView='update-records'; isDoctorMode=isDoctor;
+      if(isDoctor){ document.getElementById('updateBackBtn').onclick=showDoctorAccess; document.getElementById('updateTitle').innerHTML='✏️ Update Patient Records'; document.getElementById('updateSubtitle').textContent='Healthcare Provider Access'; document.getElementById('nfcLabel').textContent='Patient CarePass ID:' }
+      else{ document.getElementById('updateBackBtn').onclick=showPatientAccess; document.getElementById('updateTitle').innerHTML='📝 Update Medical Records'; document.getElementById('updateSubtitle').textContent='Comprehensive Health Information Management'; document.getElementById('nfcLabel').textContent='CarePass Authentication:' }
+      showSection('update-records'); const lastId=localStorage.getItem('lastCarePassId'); if(lastId) document.getElementById('carePassIdInputUpd').value=lastId
+    }
+
+    function showAccessRecords(isDoctor){
+      currentView='access-records'; isDoctorMode=isDoctor;
+      if(isDoctor){ document.getElementById('accessBackBtn').onclick=showDoctorAccess; document.getElementById('accessTitle').textContent='Patient Record Access'; document.getElementById('accessSubtitle').textContent='Healthcare provider access to patient information'; document.getElementById('accessNfcLabel').textContent='Patient CarePass ID:'; document.getElementById('accessHelp').textContent='🔒 Secure access to patient medical records' }
+      else{ document.getElementById('accessBackBtn').onclick=showPatientAccess; document.getElementById('accessTitle').textContent='Patient Record Access'; document.getElementById('accessSubtitle').textContent='View your personal medical information'; document.getElementById('accessNfcLabel').textContent='CarePass ID:'; document.getElementById('accessHelp').textContent='🔒 Secure access to your medical records' }
+      showSection('access-records')
+    }
+
+    function scanNFC(inputId){ showToast('info','NFC Scan','NFC functionality would be implemented with physical NFC hardware',3000) }
+    function addAllergy(){ const list=document.getElementById('allergiesList'); const input=document.createElement('input'); input.name='allergies[]'; input.type='text'; input.placeholder='e.g., Penicillin, Shellfish, Latex'; input.className='input-field emergency-input'; list.appendChild(input) }
+    function addMedication(){ const list=document.getElementById('medicationsList'); const input=document.createElement('input'); input.name='medications[]'; input.type='text'; input.placeholder='e.g., Metformin 500mg twice daily'; input.className='input-field emergency-input'; list.appendChild(input) }
+
+    function calculateBMI(){ const h=parseFloat(document.getElementById('heightInput').value); const w=parseFloat(document.getElementById('weightInput').value); const r=document.getElementById('bmiResult'); if(h>0&&w>0){ const m=h/100; const bmi=(w/(m*m)).toFixed(1); r.textContent=`BMI: ${bmi} (Body Mass Index calculated)`; r.classList.remove('hidden') } else r.classList.add('hidden') }
+    function checkBloodPressure(){ const bp=document.getElementById('bpInput').value; const warn=document.getElementById('bpWarning'); if(bp){ const parts=bp.split('/'); const s=parseInt(parts[0]); const d=parseInt(parts[1]); if(s&&d){ const abnormal=s>140||s<90||d>90||d<60; warn.classList.toggle('hidden',!abnormal) } } else warn.classList.add('hidden') }
+    function saveDraft(){ const fd=new FormData(document.getElementById('updateForm')); const data=Object.fromEntries(fd.entries()); localStorage.setItem('carePassDraft',JSON.stringify(data)); showToast('success','Draft Saved','Your changes have been saved locally',3000) }
+
+    function displayPatientRecord(record){
+      document.getElementById('recordName').textContent=record.fullName||record.name||'N/A';
+      document.getElementById('recordDob').textContent=record.dob||'N/A';
+      document.getElementById('recordGender').textContent=record.gender||'N/A';
+      document.getElementById('recordBloodGroup').textContent=record.bloodGroup||'N/A';
+      document.getElementById('recordAllergies').textContent=(record.allergies&&record.allergies.length)?record.allergies.join(', '):'None reported';
+      document.getElementById('recordMedications').textContent=(record.medications&&record.medications.length)?record.medications.join(', '):'None reported';
+      document.getElementById('recordEmergencyContact').textContent=record.emergencyContact||'N/A';
+      const height=record.height?`${record.height} cm`:'N/A'; const weight=record.weight?`${record.weight} kg`:'N/A'; let bmi='N/A';
+      if(record.height&&record.weight){ const h=parseFloat(record.height)/100; const w=parseFloat(record.weight); bmi=(w/(h*h)).toFixed(1) }
+      document.getElementById('recordHeight').textContent=height;
+      document.getElementById('recordWeight').textContent=weight;
+      document.getElementById('recordBmi').textContent=bmi;
+      document.getElementById('recordBp').textContent=record.bp||'N/A';
+      document.getElementById('recordMedicalHistory').textContent=record.medicalHistory||'No medical history recorded';
+      document.getElementById('recordTreatmentHistory').textContent=record.treatmentHistory||'No treatment history recorded';
+      document.getElementById('recordSurgeryHistory').textContent=record.surgeryHistory||'No surgical history recorded';
+      document.getElementById('recordPhone').textContent=record.phone||'N/A';
+      document.getElementById('recordEmail').textContent=record.email||'N/A';
+      document.getElementById('recordInsurance').textContent=record.insuranceProvider||'N/A';
+      document.getElementById('recordLastUpdated').textContent=record.lastUpdated||'N/A';
+      document.getElementById('accessForm').classList.add('hidden'); document.getElementById('patientRecord').classList.remove('hidden')
+    }
+    function resetAccessForm(){ document.getElementById('carePassIdInputAcc').value=''; document.getElementById('accessForm').classList.remove('hidden'); document.getElementById('patientRecord').classList.add('hidden') }
+    async function accessPatientRecord(){
+      const id=document.getElementById('carePassIdInputAcc').value.trim();
+      if(!id){ showToast('error','Error','Please enter a CarePass ID',3000); return }
+      const result=await fetchRecord(id);
+      const record = result && (result.record || (result.data&&result.data.record));
+      if(result.ok && record){ displayPatientRecord(record) }
+    }
+
+    document.addEventListener('DOMContentLoaded',()=>{
+      document.getElementById('createForm').addEventListener('submit',async function(e){
+        e.preventDefault();
+        const fd=new FormData(this); const data=Object.fromEntries(fd.entries());
+        if(!data.carePassId||!data.name||!data.role){ showToast('error','Validation Error','Please fill in all required fields',3000); return }
+        // Keep both Name and Full Name consistent on registration
+        data.fullName = data.name;
+        localStorage.setItem('lastCarePassId',data.carePassId);
+        const result=await sendData('register',data); if(result.ok){ this.reset(); setTimeout(()=>showPatientAccess(),1200) }
+      });
+
+      document.getElementById('updateForm').addEventListener('submit',async function(e){
+        e.preventDefault();
+        const fd=new FormData(this); const data=Object.fromEntries(fd.entries());
+        if(!data.carePassId){ showToast('error','Validation Error','CarePass ID is required',3000); return }
+        const allergies=Array.from(document.querySelectorAll('input[name="allergies[]"]')).map(i=>i.value.trim()).filter(Boolean);
+        const medications=Array.from(document.querySelectorAll('input[name="medications[]"]')).map(i=>i.value.trim()).filter(Boolean);
+        data.allergies=allergies; data.medications=medications;
+        // Ensure Name column isn't blanked on update (mirror fullName if provided)
+        if(!data.name && data.fullName) data.name = data.fullName;
+        localStorage.setItem('lastCarePassId',data.carePassId);
+        const result=await sendData('update',data); if(result.ok){ showToast('success','Success','Record updated successfully!',3000) }
+      });
+    });
+  </script>
+</body>
+</html>
